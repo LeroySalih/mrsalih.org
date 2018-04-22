@@ -1,0 +1,16 @@
+.jumbotron{
+    height:150px;
+}
+
+.moduleContent {
+    display : flex;
+    flex-direction: row;
+}
+
+.moduleDescription {
+    flex-grow: 1;
+}
+
+.moduleLessons {
+    flex-grow: 1;
+}
