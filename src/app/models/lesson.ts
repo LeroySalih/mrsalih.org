@@ -1,3 +1,5 @@
+import {LearningObjective} from './learning-objective';
+
 export interface Lesson {
     title: string;
     subtitle: string;

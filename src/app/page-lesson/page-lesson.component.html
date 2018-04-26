@@ -1,32 +1,40 @@
-<section>
-<h2>Starter</h2>
+<section *ngIf="lesson">
+        <h1 class="mat-title">{{lesson.title}}</h1>
+        <h2 class="mat-subheading-1">{{lesson.subtitle}}</h2>
 </section>
 <section>
-  <h2>Task 1</h2>
-  <input type="checkbox">
+    <div>
+        {{ lessonProgresses | json  }}
+    </div>
 </section>
-<section>
-  <h2>Quiz 1</h2>
-  <input type="checkbox">
-</section>
-<section>
-    <h2>Task 2</h2>
-    <input type="checkbox">
-</section>
-<section>
-    <h2>Quiz 2</h2>
-    <input type="checkbox">
-</section>
-<section>
-    <h2>Challenge Task</h2>
-    <div>Text goes here</div>
-    <div>Video goes here</div>
-    <input type="checkbox">Done
-</section>
-<section>
-    <h2>Feedback</h2>
-    I am feeling :) :| :(
-    <input type="checkbox">
+<section class="pageContainer">
+            
+              
+              <section>
+                  <mat-card>
+                      <mat-card-title>Learning Objectives</mat-card-title>
+                        <app-cp-learning-objective 
+                            *ngFor="let lo of learningObjectives" 
+                            [lo]="lo"
+                            (statusChange)="onStatusChange($event)"
+                            >
+                        </app-cp-learning-objective>
+                  </mat-card>
+              </section>
+              
+              <section *ngFor="let section of sections">
+                    <hr>
+                  <mat-card>
+                      <mat-card-title>{{section.title}}</mat-card-title>
+                      <mat-card-content>
+                            <div [innerHtml]="section.content"></div>
+                      </mat-card-content>
+                      <mat-card-actions>
+                            <mat-checkbox #chk (change)="onCompletedChange(section, chk);" [checked]="checkSectionComplete(section.id)">Completed</mat-checkbox>
+                      </mat-card-actions>
+                </mat-card>
+              </section>
+
 </section>
 
 

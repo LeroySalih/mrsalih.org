@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
+import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
@@ -9,15 +9,21 @@ import { Lesson, LessonId } from '../models/lesson';
 export class LessonService {
 
   collection: AngularFirestoreCollection<Lesson>;
-  modules: Observable<LessonId[]>;
-  modules$: BehaviorSubject<LessonId[]>;
 
-  constructor(afs: AngularFirestore) {
-    this.modules$ = new BehaviorSubject<LessonId[]>(null);
+  lesson$: BehaviorSubject<Lesson>;
 
-   // this.collection = afs.collection<Module>('modules');
-    this.collection = afs.collection<Lesson>('lessons', ref => ref.orderBy('order', 'asc'));
-    this.modules = this.collection.snapshotChanges().map(actions => {
+  constructor(private afs: AngularFirestore) {
+
+  }
+
+  getLessons(moduleId: string): Observable<any> {
+
+    console.log(`[lesson-service::getLessons] sending`);
+
+    const collection: AngularFirestoreCollection<Lesson> =
+      this.afs.collection<Lesson>('lessons', ref => ref.where('moduleId', '==', moduleId).orderBy('order', 'asc'));
+
+    return this.collection.snapshotChanges().map(actions => {
       return actions.map(a => {
         const data = a.payload.doc.data() as Lesson;
         const id = a.payload.doc.id;
@@ -26,10 +32,15 @@ export class LessonService {
       });
     });
 
-    this.modules.subscribe((data) => {
-      console.log(`[module-service::constructor] sending`, data);
-      this.modules$.next(data);
-    });
+  }
+
+  getLesson(lessonId: string): Observable<LessonId> {
+
+    console.log(`[lesson-service::getLesson] Starting`);
+
+    const document: AngularFirestoreDocument<LessonId> = this.afs.doc(`lessons/${lessonId}`);
+    return document.valueChanges();
+
   }
 
 }

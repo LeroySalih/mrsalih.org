@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ModuleId } from '../models/module';
-import { ModuleService } from '../services/module.service';
+import { LessonService } from '../services/lesson.service';
 import { ActivatedRoute, ParamMap } from '@angular/router';
+
+import { LessonId } from '../models/lesson';
 
 @Component({
   selector: 'app-page-module',
@@ -11,16 +13,22 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 export class PageModuleComponent implements OnInit {
 
   moduleId = 'Not Set';
+  lessons: LessonId[];
 
   constructor(
       private route: ActivatedRoute,
-      private readonly moduleService: ModuleService) { }
+      private readonly lessonService: LessonService) { }
 
   ngOnInit() {
 
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       this.moduleId = paramMap['params']['id'];
 
+      this.lessonService.lessons$.subscribe((data: LessonId[]) => {
+        this.lessons = data;
+      });
+
+      this.lessonService.getLessons(this.moduleId);
     });
 
     /*

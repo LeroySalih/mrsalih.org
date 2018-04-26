@@ -1,11 +1,8 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <section class="siteMenu">
-    <button mat-button> Click Me!</button>
+    <button mat-button *ngIf="!userProfile" (click)="OnLogIn()">Log In</button>
+    <button mat-button *ngIf="userProfile" (click)="OnLogOut()">Log Out {{userProfile['name']}} ({{userProfile['className']}})</button>
 </section>
-<ul>
-    <li *ngFor="let  module of modules">
-        <pre>{{ module | json }}</pre>
-    </li>
-</ul>
+
 <router-outlet></router-outlet>
 
