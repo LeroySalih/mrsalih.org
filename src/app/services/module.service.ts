@@ -27,7 +27,7 @@ export class ModuleService {
     });
 
     this.modules.subscribe((data) => {
-      console.log(`[module-service::constructor] sending`, data);
+    //  console.log(`[module-service::constructor] sending`, data);
       this.modules$.next(data);
     });
   }

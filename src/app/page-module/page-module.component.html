@@ -4,7 +4,7 @@
   
 </section>
 
-<section class="moduleContent">
+<section *ngIf="lessons; else loading" class="moduleContent">
   <div class="moduleDescription">
     <H2 class="mat-h2">Summary</H2>
     <h2 class="mat-h2">Content</h2>
@@ -22,3 +22,7 @@
     </table>
   </div>
 </section>
+
+<ng-template #loading>
+  Data Loading
+</ng-template>

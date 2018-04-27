@@ -5,7 +5,7 @@
             </div>    
         <form>
             <mat-form-field>    
-                <mat-select (selectionChange)="onStatusChange($event, lo)">
+                <mat-select (selectionChange)="onStatusChange($event)" [(value)]="status">
                     <mat-option value="Not Yet">Not Yet</mat-option>
                     <mat-option value="Nearly There">Nearly There</mat-option>
                     <mat-option value="Got It">Got It</mat-option>

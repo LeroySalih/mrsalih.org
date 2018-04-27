@@ -21,8 +21,6 @@ export class LessonSectionService {
 
   getLessonSections(lessonId: string): Observable<LessonSection[]> {
 
-    console.log(`[lesson-section-service::getLessonSections] Starting with lessonId:`, lessonId);
-
     this.collection = this.afs.collection<LessonSection>
           ('lesson-sections', ref => ref.where('lessonId', '==', lessonId).orderBy('order', 'asc'));
     return this.collection.snapshotChanges().map(actions => {

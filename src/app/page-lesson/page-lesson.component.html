@@ -2,11 +2,6 @@
         <h1 class="mat-title">{{lesson.title}}</h1>
         <h2 class="mat-subheading-1">{{lesson.subtitle}}</h2>
 </section>
-<section>
-    <div>
-        {{ lessonProgresses | json  }}
-    </div>
-</section>
 <section class="pageContainer">
             
               
@@ -14,9 +9,10 @@
                   <mat-card>
                       <mat-card-title>Learning Objectives</mat-card-title>
                         <app-cp-learning-objective 
-                            *ngFor="let lo of learningObjectives" 
+                            *ngFor="let lo of los" 
                             [lo]="lo"
-                            (statusChange)="onStatusChange($event)"
+                            [status]="getLoFeedback(lo)"
+                            (statusChange)="onLOStatusChange($event, lo)"
                             >
                         </app-cp-learning-objective>
                   </mat-card>

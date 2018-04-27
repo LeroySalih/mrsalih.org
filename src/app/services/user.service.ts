@@ -29,17 +29,17 @@ export class UserService {
 
     firebase.auth().onAuthStateChanged((newUser) => {
       if (newUser) {
-        console.log(`[UserService::onNewUserDetected] New current user.  Getting User profile`);
+       // console.log(`[UserService::onNewUserDetected] New current user.  Getting User profile`);
         // load user details
         const usersRef = this.db.collection('userProfiles');
 
-        console.log(`matching userProfile on ${newUser['uid']}`);
+      //  console.log(`matching userProfile on ${newUser['uid']}`);
         // const query = usersRef.document('authenticationId', '==', newUser['uid'])
         // this.db.collection('userProfiles', ref => ref.where('authenticationId', '==', newUser['uid']))
         const userProfilesRef = db.collection<UserProfile>('userProfiles');
         const userProfiles = userProfilesRef.valueChanges();
         userProfiles.subscribe ((docs) => {
-            console.log('User Profile recieved:', docs);
+        //    console.log('User Profile recieved:', docs);
             this.currentUser$.next(docs[0]);
         });
 

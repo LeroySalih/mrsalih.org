@@ -19,7 +19,11 @@ export class CpLearningObjectiveComponent implements OnInit {
   @Output()
   statusChange: EventEmitter<OnStatusChangeEvent>;
 
+  @Input()
+  status: string;
+
   constructor() {
+
     this.statusChange = new EventEmitter<OnStatusChangeEvent>();
   }
 

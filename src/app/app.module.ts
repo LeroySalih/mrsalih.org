@@ -18,12 +18,14 @@ import { PageLoginComponent} from './page-login/page-login.component';
 import { environment } from '../environments/environment';
 import { ModuleService } from './services/module.service';
 import { LessonService } from './services/lesson.service';
-import { LearningObjectivesService} from './services/learning-objectives.service';
+
 import { LessonSectionService} from './services/lesson-section.service';
 
 import { UserService } from './services/user.service';
 import { CpLearningObjectiveComponent } from './cp-learning-objective/cp-learning-objective.component';
 import { LessonProgressService } from './services/lesson-progress.service';
+import { LOService} from './services/lo.service';
+import { LOProgressService } from './services/lo-progress.service';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: '/home', pathMatch: 'full'},
@@ -55,9 +57,16 @@ const appRoutes: Routes = [
       { enableTracing: false } // <-- debugging purposes only
     )
   ],
-  providers: [ModuleService, LessonService, LessonProgressService,
-    UserService, LearningObjectivesService,
-    LessonSectionService, AngularFireAuth, LessonProgressService],
+  providers: [
+    ModuleService,
+    LessonService,
+    UserService,
+    LOService,
+    LOProgressService,
+    LessonSectionService,
+    AngularFireAuth,
+    LessonProgressService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

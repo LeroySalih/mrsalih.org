@@ -1,9 +1,9 @@
-export interface LearningObjective {
+export interface LearningObjectiveBase {
     order: number;
     title: string;
 }
 
-export interface LearningObjectiveId extends LearningObjective {
+export interface LearningObjective extends LearningObjectiveBase {
     id: string;
 }
 

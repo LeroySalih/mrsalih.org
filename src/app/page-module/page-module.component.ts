@@ -24,19 +24,11 @@ export class PageModuleComponent implements OnInit {
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       this.moduleId = paramMap['params']['id'];
 
-      this.lessonService.lessons$.subscribe((data: LessonId[]) => {
+      this.lessonService.getLessons(this.moduleId).subscribe((data: LessonId[]) => {
         this.lessons = data;
       });
 
-      this.lessonService.getLessons(this.moduleId);
     });
-
-    /*
-    this.moduleService.modules$.subscribe((data) => {
-      console.log(`[app-component::ngInit] Received:`, data);
-      this.modules = data;
-    });
-    */
   }
 
 }

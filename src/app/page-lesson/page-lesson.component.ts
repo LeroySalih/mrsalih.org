@@ -3,14 +3,21 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 import { LessonService } from '../services/lesson.service';
 import { LessonSectionService } from '../services/lesson-section.service';
 
+import { Observable} from 'rxjs/Observable';
+import { combineLatest } from 'rxjs/observable/combineLatest';
+import { forkJoin } from 'rxjs/observable/forkJoin';
+
 import { LessonId, Lesson } from '../models/lesson';
 import { LearningObjective } from '../models/learning-objective';
-import { LearningObjectivesService } from '../services/learning-objectives.service';
+import { LOService } from '../services/lo.service';
+import { LOProgressService } from '../services/lo-progress.service';
+
 import { LessonSection } from '../models/lesson-section';
 import { UserService } from '../services/user.service';
 import { UserProfile } from '../models/user-profile';
 import { LessonProgressService } from '../services/lesson-progress.service';
 import { LessonProgress } from '../models/lesson-progress';
+import { LearningObjectiveFeedback } from '../models/learning-objective-feedback';
 
 @Component({
   selector: 'app-page-lesson',
@@ -19,62 +26,89 @@ import { LessonProgress } from '../models/lesson-progress';
 })
 export class PageLessonComponent implements OnInit {
 
+  userProfile: UserProfile;
   lessonId = 'Not Set';
   lesson: Lesson;
-  learningObjectives: LearningObjective[];
-  lessonProgresses: any = {};
   sections: LessonSection[];
-  userProfile: UserProfile;
+  lessonProgresses: any = {};
+  los: LearningObjective[];
+  loProgress: { [id: string]:  string}  = {};
 
   constructor(private route: ActivatedRoute,
               private lessonService: LessonService,
-              private learningObjectiveService: LearningObjectivesService,
+              private loService: LOService,
+              private loProgressService: LOProgressService,
               private lessonSectionService: LessonSectionService,
               private userService: UserService,
-              private lessonProgressService: LessonProgressService
-            ) { }
+              private lessonProgressService: LessonProgressService,
+            ) {
+
+             // this.learningObjectiveFeedback = {'PsfYfc3ag8oGkfOS8hQn': 'Not Yet', 'gG18CK2wQ14STjnyBX9B' : 'Got It'};
+
+             }
 
   ngOnInit() {
 
-    this.route.paramMap.subscribe((paramMap: ParamMap) => {
-      this.lessonId = paramMap['params']['id'];
+    const pageParam$: Observable<ParamMap> = this.route.paramMap;
+    const user$: Observable<UserProfile> = this.userService.currentUser$;
 
-      this.userService.currentUser$.subscribe((userProfile) => {
-        this.userProfile = userProfile;
+    const values$ = combineLatest(
+      pageParam$,
+      user$,
+      (page, user) =>  ({page, user})
+    );
 
-          this.lessonService.getLesson(this.lessonId).subscribe((lesson) => {
-            this.lesson = lesson;
+    values$.subscribe(data => {
+      if (!data.page || !data.user) {return; }
 
-            this.learningObjectiveService
-            .getLearningObjectives(this.lessonId)
-            .subscribe((los) => {this.learningObjectives = los; });
+      // At this point, we have lessonId and userId.
 
+      this.lessonId = data.page['params']['id'];
+      this.userProfile = data.user;
 
-          this.lessonSectionService
-            .getLessonSections(this.lessonId)
-            .subscribe((lessonSections) => {
-                this.sections = lessonSections;
-            });
+      combineLatest(
+          this.lessonService.getLesson(this.lessonId),
+          this.lessonSectionService.getLessonSections(this.lessonId),
+          this.lessonProgressService.getLessonProgressForUser(this.userProfile.authenticationId, this.lessonId),
+          this.loService.getLearningObjectives(this.lessonId),
+          this.loProgressService.getLOProgressForUser(this.userProfile.authenticationId, this.lessonId),
+          (lesson, sections, progress, los, loProgress) => ({lesson, sections, progress, los, loProgress})
+        ).subscribe((lessonData) => {
+            this.lesson = lessonData.lesson;
+            this.sections = lessonData.sections;
 
+            this.los = lessonData.los;
 
-          this.lessonProgressService.getLessonProgressForUser(
-              this.userProfile.authenticationId,
-              this.lessonId
-            ).subscribe((lps) => {
-              lps.forEach((lp) => { this.lessonProgresses[lp.sectionId] = lp.completed; } );
-            });
+            // build completion dictionary.
+            lessonData.progress.forEach((lp) => {
+              this.lessonProgresses[lp.sectionId] = lp.completed;
+            } );
 
+            // build lo progress dictionary
+            lessonData.loProgress.forEach((lop: LearningObjectiveFeedback) => {
+              this.loProgress[lop.learningObjectiveId] = lop.status;
           });
-      });
 
+        });
 
     });
+
   }
 
-  onStatusChange(data) {
-    console.log(`Selection Change detected`);
-    console.log(`${this.userProfile.name}::${this.userProfile.className}`);
-    console.log(`Data: `, data);
+  onLOStatusChange(event, lo: LearningObjective) {
+
+     const lop: LearningObjectiveFeedback = {
+      userId: this.userProfile.authenticationId,
+      className: this.userProfile.className,
+      learningObjectiveId: lo.id,
+      lessonId: this.lessonId,
+      status: event.status
+    };
+
+    this.loProgressService.setProgressForUser(lop)
+      .then(() => { console.log(`Progress updated.`); })
+      .catch((err) => {console.log(`Error Updating Progress`, err); });
+
   }
 
   onCompletedChange(section, chk) {
@@ -95,6 +129,10 @@ export class PageLessonComponent implements OnInit {
 
   checkSectionComplete(sectionId) {
     return this.lessonProgresses[sectionId];
+  }
+
+  getLoFeedback(lo: LearningObjective): string  {
+    return this.loProgress[lo.id];
   }
 
 }

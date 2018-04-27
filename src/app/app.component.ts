@@ -27,13 +27,13 @@ export class AppComponent implements OnInit, OnDestroy {
              private userService: UserService,
              private router: Router) {
             this.userService.currentUser$.subscribe((user: UserProfile) => {
-            console.log(`[constructor] New user detected`, user);
+ //           console.log(`[constructor] New user detected`, user);
             this.userProfile = user;
         });
   }
 
   ngOnInit() {
-    console.log(`[app-component::ngInit] Called`);
+  //  console.log(`[app-component::ngInit] Called`);
   }
 
   ngOnDestroy() {
