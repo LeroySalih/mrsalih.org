@@ -1,12 +1,14 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireAuthModule, AngularFireAuth } from 'angularfire2/auth';
 import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
+
+import { YoutubePlayerModule} from 'ngx-youtube-player';
 
 import { MaterialModule } from './material.module';
 import { AppComponent } from './app.component';
@@ -26,6 +28,10 @@ import { CpLearningObjectiveComponent } from './cp-learning-objective/cp-learnin
 import { LessonProgressService } from './services/lesson-progress.service';
 import { LOService} from './services/lo.service';
 import { LOProgressService } from './services/lo-progress.service';
+import { CpSectionNotesComponent } from './cp-section-notes/cp-section-notes.component';
+import { SectionNotesService } from './services/section-notes.service';
+import { CpEmbedVideoComponent } from './cp-embed-video/cp-embed-video.component';
+import { CpLearningObjectivesComponent } from './cp-learning-objectives/cp-learning-objectives.component';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: '/home', pathMatch: 'full'},
@@ -42,16 +48,20 @@ const appRoutes: Routes = [
     PageModuleComponent,
     PageLessonComponent,
     PageLoginComponent,
-    CpLearningObjectiveComponent
+    CpLearningObjectiveComponent,
+    CpSectionNotesComponent,
+    CpEmbedVideoComponent,
+    CpLearningObjectivesComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     MaterialModule,
-    FormsModule,
+    FormsModule, ReactiveFormsModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     AngularFireAuthModule,
+    YoutubePlayerModule,
     RouterModule.forRoot(
       appRoutes,
       { enableTracing: false } // <-- debugging purposes only
@@ -65,7 +75,8 @@ const appRoutes: Routes = [
     LOProgressService,
     LessonSectionService,
     AngularFireAuth,
-    LessonProgressService
+    LessonProgressService,
+    SectionNotesService
   ],
   bootstrap: [AppComponent]
 })

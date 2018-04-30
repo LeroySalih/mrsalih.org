@@ -3,6 +3,8 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 import { LessonService } from '../services/lesson.service';
 import { LessonSectionService } from '../services/lesson-section.service';
 
+import { Validators, FormBuilder, FormGroup, FormArray } from '@angular/forms';
+
 import { Observable} from 'rxjs/Observable';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 import { forkJoin } from 'rxjs/observable/forkJoin';
@@ -18,6 +20,18 @@ import { UserProfile } from '../models/user-profile';
 import { LessonProgressService } from '../services/lesson-progress.service';
 import { LessonProgress } from '../models/lesson-progress';
 import { LearningObjectiveFeedback } from '../models/learning-objective-feedback';
+import { SectionNotes, VideoNote } from '../models/section-notes';
+import { SectionNotesService } from '../services/section-notes.service';
+
+export interface Customer {
+  name: string; // required field with minimum 5 characters
+  addresses: Address[]; // user can have one or more addresses
+}
+
+export interface Address {
+  street: string;  // required field
+  postcode: string;
+}
 
 @Component({
   selector: 'app-page-lesson',
@@ -32,7 +46,10 @@ export class PageLessonComponent implements OnInit {
   sections: LessonSection[];
   lessonProgresses: any = {};
   los: LearningObjective[];
-  loProgress: { [id: string]:  string}  = {};
+  loProgress: {[id: string]: LearningObjectiveFeedback} = {};  // { [id: string]:  string}  = {};
+  sectionNotes: { [ id: string]: VideoNote[]} = {};
+
+  public myForm: FormGroup; // our form model
 
   constructor(private route: ActivatedRoute,
               private lessonService: LessonService,
@@ -41,6 +58,8 @@ export class PageLessonComponent implements OnInit {
               private lessonSectionService: LessonSectionService,
               private userService: UserService,
               private lessonProgressService: LessonProgressService,
+              private sectionNotesService: SectionNotesService,
+              private _fb: FormBuilder,
             ) {
 
              // this.learningObjectiveFeedback = {'PsfYfc3ag8oGkfOS8hQn': 'Not Yet', 'gG18CK2wQ14STjnyBX9B' : 'Got It'};
@@ -72,8 +91,11 @@ export class PageLessonComponent implements OnInit {
           this.lessonProgressService.getLessonProgressForUser(this.userProfile.authenticationId, this.lessonId),
           this.loService.getLearningObjectives(this.lessonId),
           this.loProgressService.getLOProgressForUser(this.userProfile.authenticationId, this.lessonId),
-          (lesson, sections, progress, los, loProgress) => ({lesson, sections, progress, los, loProgress})
+          this.sectionNotesService.getSectionNotesForLesson(this.userProfile.authenticationId, this.lessonId),
+          (lesson, sections, progress, los, loProgress, sectionNotes) => ({lesson, sections, progress, los, loProgress, sectionNotes})
         ).subscribe((lessonData) => {
+            console.log(lessonData);
+
             this.lesson = lessonData.lesson;
             this.sections = lessonData.sections;
 
@@ -84,10 +106,15 @@ export class PageLessonComponent implements OnInit {
               this.lessonProgresses[lp.sectionId] = lp.completed;
             } );
 
-            // build lo progress dictionary
-            lessonData.loProgress.forEach((lop: LearningObjectiveFeedback) => {
-              this.loProgress[lop.learningObjectiveId] = lop.status;
-          });
+            // Build the Learning Objective Progress
+           lessonData.loProgress.forEach((loProgress) => {
+            this.loProgress[loProgress.learningObjectiveId] = loProgress;
+           });
+
+            // build section comments>
+            lessonData.sectionNotes.forEach((sectionNote: SectionNotes) => {
+              this.sectionNotes[sectionNote.sectionId] = sectionNote.notes;
+            });
 
         });
 
@@ -95,12 +122,13 @@ export class PageLessonComponent implements OnInit {
 
   }
 
-  onLOStatusChange(event, lo: LearningObjective) {
+  onLOStatusChange(event) {
+    console.log(`onLOStatusChange`, event);
 
      const lop: LearningObjectiveFeedback = {
       userId: this.userProfile.authenticationId,
       className: this.userProfile.className,
-      learningObjectiveId: lo.id,
+      learningObjectiveId: event.lo.id,
       lessonId: this.lessonId,
       status: event.status
     };
@@ -108,6 +136,20 @@ export class PageLessonComponent implements OnInit {
     this.loProgressService.setProgressForUser(lop)
       .then(() => { console.log(`Progress updated.`); })
       .catch((err) => {console.log(`Error Updating Progress`, err); });
+
+  }
+
+  saveSectionNote(event) {
+    console.log('Section Note Event Received');
+    console.log(event);
+    const sectionNotes: SectionNotes = {
+        userId: this.userProfile.authenticationId,
+        lessonId: this.lessonId,
+        ...event};
+
+    this.sectionNotesService.setSectionNotes(sectionNotes)
+      .then(() => { console.log ('[saveSectionNotes] Comments Updated'); })
+      .catch((err) => {console.error('[saveSectionNotes] ', err.message); });
 
   }
 
@@ -131,8 +173,9 @@ export class PageLessonComponent implements OnInit {
     return this.lessonProgresses[sectionId];
   }
 
-  getLoFeedback(lo: LearningObjective): string  {
-    return this.loProgress[lo.id];
+  getNotesForSection (sectionId): VideoNote[] {
+    // console.log(this.sectionNotes[sectionId]);
+    return this.sectionNotes[sectionId];
   }
 
 }

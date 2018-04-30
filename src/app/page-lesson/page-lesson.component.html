@@ -3,28 +3,31 @@
         <h2 class="mat-subheading-1">{{lesson.subtitle}}</h2>
 </section>
 <section class="pageContainer">
-            
-              
+        
               <section>
-                  <mat-card>
-                      <mat-card-title>Learning Objectives</mat-card-title>
-                        <app-cp-learning-objective 
-                            *ngFor="let lo of los" 
-                            [lo]="lo"
-                            [status]="getLoFeedback(lo)"
-                            (statusChange)="onLOStatusChange($event, lo)"
-                            >
-                        </app-cp-learning-objective>
-                  </mat-card>
+                  <app-cp-learning-objectives 
+                            [los]="los"
+                            [loProgress]="loProgress"
+                            (statusChange)="onLOStatusChange($event)"
+                            ></app-cp-learning-objectives>
               </section>
               
               <section *ngFor="let section of sections">
                     <hr>
                   <mat-card>
                       <mat-card-title>{{section.title}}</mat-card-title>
+                      
                       <mat-card-content>
+                            <app-cp-embed-video [myVideoId]="'ZhVaSWYcdyQ'">
+
+                            </app-cp-embed-video>
+                            <div>{{ getNotesForSection(section.id) | json}}</div>
                             <div [innerHtml]="section.content"></div>
-                      </mat-card-content>
+                            <app-cp-section-notes 
+                                    [sectionId]="section.id"
+                                    [notes]="getNotesForSection(section.id)"
+                                    (SectionNoteChange)="saveSectionNote($event)"></app-cp-section-notes>
+                        </mat-card-content>
                       <mat-card-actions>
                             <mat-checkbox #chk (change)="onCompletedChange(section, chk);" [checked]="checkSectionComplete(section.id)">Completed</mat-checkbox>
                       </mat-card-actions>
