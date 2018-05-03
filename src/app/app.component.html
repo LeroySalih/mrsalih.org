@@ -1,8 +1,22 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<section class="siteMenu">
-    <button mat-button *ngIf="!userProfile" (click)="OnLogIn()">Log In</button>
-    <button mat-button *ngIf="userProfile" (click)="OnLogOut()">Log Out {{userProfile['name']}} ({{userProfile['className']}})</button>
-</section>
 
-<router-outlet></router-outlet>
+<mat-sidenav-container class="example-container" >
+    <mat-sidenav #sidenav>
+            <button mat-button (click)="sidenav.toggle()">Toggle</button>
+
+            <button mat-button *ngIf="!userProfile" (click)="OnLogIn()">Log In</button>
+            <button mat-button *ngIf="userProfile" (click)="OnLogOut()">Log Out {{userProfile['name']}} ({{userProfile['className']}})</button>
+
+    </mat-sidenav>
+    <mat-sidenav-content>
+            <section class="siteMenu">
+                    <button mat-button (click)="sidenav.toggle()">Toggle</button>
+                    Challenge-Progress
+                </section>
+            <router-outlet></router-outlet>
+    </mat-sidenav-content>
+    
+</mat-sidenav-container>
+
+
 

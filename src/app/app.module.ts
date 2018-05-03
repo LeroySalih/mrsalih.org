@@ -8,8 +8,6 @@ import { AngularFireModule } from 'angularfire2';
 import { AngularFireAuthModule, AngularFireAuth } from 'angularfire2/auth';
 import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
-import { YoutubePlayerModule} from 'ngx-youtube-player';
-
 import { MaterialModule } from './material.module';
 import { AppComponent } from './app.component';
 import { PageHomeComponent } from './page-home/page-home.component';
@@ -32,6 +30,8 @@ import { CpSectionNotesComponent } from './cp-section-notes/cp-section-notes.com
 import { SectionNotesService } from './services/section-notes.service';
 import { CpEmbedVideoComponent } from './cp-embed-video/cp-embed-video.component';
 import { CpLearningObjectivesComponent } from './cp-learning-objectives/cp-learning-objectives.component';
+import { CpEmbedLocalVideoComponent } from './cp-embed-local-video/cp-embed-local-video.component';
+import { CpEmbedTextContentComponent } from './cp-embed-text-content/cp-embed-text-content.component';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: '/home', pathMatch: 'full'},
@@ -51,7 +51,9 @@ const appRoutes: Routes = [
     CpLearningObjectiveComponent,
     CpSectionNotesComponent,
     CpEmbedVideoComponent,
-    CpLearningObjectivesComponent
+    CpEmbedLocalVideoComponent,
+    CpLearningObjectivesComponent,
+    CpEmbedTextContentComponent
   ],
   imports: [
     BrowserModule,
@@ -61,7 +63,6 @@ const appRoutes: Routes = [
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     AngularFireAuthModule,
-    YoutubePlayerModule,
     RouterModule.forRoot(
       appRoutes,
       { enableTracing: false } // <-- debugging purposes only

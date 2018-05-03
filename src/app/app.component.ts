@@ -47,4 +47,7 @@ export class AppComponent implements OnInit, OnDestroy {
   OnLogIn() {
     this.router.navigate(['/login']);
   }
+  toggleSideButton() {
+    console.log('CLicked');
+  }
 }
