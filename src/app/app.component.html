@@ -2,18 +2,24 @@
 
 <mat-sidenav-container class="example-container" >
     <mat-sidenav #sidenav>
-            <button mat-button (click)="sidenav.toggle()">Toggle</button>
+            <button mat-button (click)="sidenav.toggle()">Hide</button>
 
             <button mat-button *ngIf="!userProfile" (click)="OnLogIn()">Log In</button>
             <button mat-button *ngIf="userProfile" (click)="OnLogOut()">Log Out {{userProfile['name']}} ({{userProfile['className']}})</button>
+            <p-button label="Click" ></p-button>
+            <p-rating [(ngModel)]="val"></p-rating>    
+            <p-triStateCheckbox [(ngModel)]="value" label="Item Label"></p-triStateCheckbox>
 
     </mat-sidenav>
     <mat-sidenav-content>
             <section class="siteMenu">
-                    <button mat-button (click)="sidenav.toggle()">Toggle</button>
+                    <button mat-button (click)="sidenav.toggle()"><mat-icon>menu</mat-icon></button>
                     Challenge-Progress
                 </section>
-            <router-outlet></router-outlet>
+                <section>
+                        
+                </section>
+                <router-outlet></router-outlet>
     </mat-sidenav-content>
     
 </mat-sidenav-container>

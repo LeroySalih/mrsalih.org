@@ -8,7 +8,7 @@ import { AngularFireModule } from 'angularfire2';
 import { AngularFireAuthModule, AngularFireAuth } from 'angularfire2/auth';
 import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
-import { MaterialModule } from './material.module';
+
 import { AppComponent } from './app.component';
 import { PageHomeComponent } from './page-home/page-home.component';
 import { PageModuleComponent } from './page-module/page-module.component';
@@ -32,6 +32,9 @@ import { CpEmbedVideoComponent } from './cp-embed-video/cp-embed-video.component
 import { CpLearningObjectivesComponent } from './cp-learning-objectives/cp-learning-objectives.component';
 import { CpEmbedLocalVideoComponent } from './cp-embed-local-video/cp-embed-local-video.component';
 import { CpEmbedTextContentComponent } from './cp-embed-text-content/cp-embed-text-content.component';
+
+import { MaterialModule } from './material.module';
+import { PrimeNGModule } from './primeng.module';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: '/home', pathMatch: 'full'},
@@ -59,7 +62,9 @@ const appRoutes: Routes = [
     BrowserModule,
     BrowserAnimationsModule,
     MaterialModule,
-    FormsModule, ReactiveFormsModule,
+    PrimeNGModule,
+    FormsModule,
+    ReactiveFormsModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     AngularFireAuthModule,

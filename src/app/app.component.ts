@@ -21,7 +21,7 @@ export class AppComponent implements OnInit, OnDestroy {
   modulesSub: Subscription;
   modules: ModuleId[];
   userProfile: UserProfile;
-
+  val = 2;
   constructor(private moduleService: ModuleService,
              private firebaseAuth: AngularFireAuth,
              private userService: UserService,
