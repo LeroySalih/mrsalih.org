@@ -1,13 +1,17 @@
 
-<section class="content" *ngFor="let module of modules">
-    <app-cp-module-summary 
 
+    <div>
+        <button mat-raised-button mat-button-primary (click)="onNewModule()">New Module</button>
+    </div>
+
+    <app-cp-module-summary 
+          class="content" *ngFor="let module of modules"
           (moduleEdit)="onModuleChanged($event)"
           (readMore)="onReadMoreClicked($event)" 
           [readOnly]="false"
           [module]="module"></app-cp-module-summary> 
 
-</section> 
+
 
 
 

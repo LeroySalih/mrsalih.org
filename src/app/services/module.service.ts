@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { Module, ModuleId } from '../models/module';
+import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class ModuleService {
@@ -35,6 +36,14 @@ export class ModuleService {
   }
 
   saveModule (module: ModuleId): Promise<void> {
+
+    console.log(`[saveModule] received `, module );
+
+    if (module.id === undefined) {
+      console.log(`Module Id is undefined, creating new`);
+      module.id = uuid();
+      module.order = 0;
+    }
     return this.afs.doc(`modules/${module.id}`).set(module);
   }
 

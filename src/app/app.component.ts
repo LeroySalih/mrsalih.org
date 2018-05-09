@@ -9,9 +9,6 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { UserService } from './services/user.service';
 import { UserProfile } from './models/user-profile';
 import { MessageService } from 'primeng/components/common/messageservice';
-import { MatDialog, MatDialogConfig } from '@angular/material';
-
-import { ModuleDialogComponent} from './module-dialog/module-dialog.component';
 
 @Component({
   selector: 'app-root',
@@ -29,13 +26,12 @@ export class AppComponent implements OnInit, OnDestroy {
              private firebaseAuth: AngularFireAuth,
              private userService: UserService,
              private messageService: MessageService,
-             private matDialog: MatDialog,
              private router: Router) {
             this.userService.currentUser$.subscribe((user: UserProfile) => {
  //           console.log(`[constructor] New user detected`, user);
             this.userProfile = user;
             console.log('New User Logged in');
-            if (user) {
+            if (!user) {
               this.messageService.add({severity: 'succcess', summary: 'User Logged out'});
             } else {
               this.messageService.add({severity: 'succcess', summary: 'New User Logged in'});
@@ -48,22 +44,7 @@ export class AppComponent implements OnInit, OnDestroy {
   //  console.log(`[app-component::ngInit] Called`);
   }
 
-  openDialog() {
-    const dialogConfig = new MatDialogConfig();
 
-    dialogConfig.disableClose = false;
-    dialogConfig.autoFocus = true;
-
-    dialogConfig.data = {
-      id: 1, description: 'New Module'
-    };
-
-    const dialogRef = this.matDialog.open(ModuleDialogComponent, dialogConfig);
-
-    dialogRef.afterClosed().subscribe(
-        data => console.log('Dialog output:', data)
-    );
-  }
 
   ngOnDestroy() {
     this.modulesSub.unsubscribe();

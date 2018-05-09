@@ -7,7 +7,9 @@ import { ModuleService } from '../services/module.service';
 
 import {ModuleEditEvent, ReadMoreEvent} from '../cp-module-summary/cp-module-summary.component';
 
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
+import { MatDialog, MatDialogConfig } from '@angular/material';
+
+import { ModuleDialogComponent} from '../module-dialog/module-dialog.component';
 
 @Component({
   selector: 'app-page-home',
@@ -22,6 +24,7 @@ export class PageHomeComponent implements OnInit {
 
   constructor(private readonly moduleService: ModuleService,
               private router: Router,
+              private matDialog: MatDialog,
               private messageService: MessageService,
               ) { }
 
@@ -32,13 +35,39 @@ export class PageHomeComponent implements OnInit {
     });
   }
 
-
-  onModuleChanged(module: ModuleEditEvent) {
-    console.log(`New Module: `);
-  }
-
   onReadMoreClicked(readMoreEvent: ReadMoreEvent) {
     this.router.navigate(['module', readMoreEvent.module.id]);
+  }
+
+  onNewModule () {
+    this.onModuleChanged({ module: null} as ModuleEditEvent);
+  }
+
+  onModuleChanged(module: ModuleEditEvent) {
+    console.log(`[onModuleChanged]`, module);
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = false;
+    dialogConfig.autoFocus = true;
+
+    dialogConfig.data = module;
+
+    const dialogRef = this.matDialog.open(ModuleDialogComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(
+        (data) => {
+          console.log('Dialog output:', data);
+          if (data) {
+            this.moduleService.saveModule(data as ModuleId)
+            .then(() => {
+                this.messageService.add(
+                  {severity: 'success', summary: 'Module Saved'}
+                );
+              });
+          }
+
+        }
+    );
   }
 
 
