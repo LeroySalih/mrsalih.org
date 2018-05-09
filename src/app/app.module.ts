@@ -35,6 +35,12 @@ import { CpEmbedTextContentComponent } from './cp-embed-text-content/cp-embed-te
 
 import { MaterialModule } from './material.module';
 import { PrimeNGModule } from './primeng.module';
+import { Message} from 'primeng/components/common/api';
+import { MessageService} from 'primeng/components/common/messageservice';
+import { CpModuleSummaryComponent } from './cp-module-summary/cp-module-summary.component';
+import { MatDialogModule } from '@angular/material';
+import { ModuleDialogComponent } from './module-dialog/module-dialog.component';
+
 
 const appRoutes: Routes = [
   {path: '', redirectTo: '/home', pathMatch: 'full'},
@@ -56,12 +62,15 @@ const appRoutes: Routes = [
     CpEmbedVideoComponent,
     CpEmbedLocalVideoComponent,
     CpLearningObjectivesComponent,
-    CpEmbedTextContentComponent
+    CpEmbedTextContentComponent,
+    CpModuleSummaryComponent,
+    ModuleDialogComponent,
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     MaterialModule,
+    MatDialogModule,
     PrimeNGModule,
     FormsModule,
     ReactiveFormsModule,
@@ -82,8 +91,10 @@ const appRoutes: Routes = [
     LessonSectionService,
     AngularFireAuth,
     LessonProgressService,
-    SectionNotesService
+    SectionNotesService, MessageService,
+
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [AppComponent, ModuleDialogComponent]
 })
 export class AppModule { }

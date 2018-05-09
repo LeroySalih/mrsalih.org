@@ -1,8 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import {Router} from '@angular/router';
+import { MessageService } from 'primeng/components/common/messageservice';
 
 import { ModuleId } from '../models/module';
 import { ModuleService } from '../services/module.service';
+
+import {ModuleEditEvent, ReadMoreEvent} from '../cp-module-summary/cp-module-summary.component';
+
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 
 @Component({
   selector: 'app-page-home',
@@ -13,8 +18,11 @@ export class PageHomeComponent implements OnInit {
 
   modules: ModuleId[];
 
+  animal: string;
+
   constructor(private readonly moduleService: ModuleService,
               private router: Router,
+              private messageService: MessageService,
               ) { }
 
   ngOnInit() {
@@ -24,9 +32,15 @@ export class PageHomeComponent implements OnInit {
     });
   }
 
-  OnReadMoreClick(data: ModuleId) {
-    console.log(`[page-home::OnReadMore] Clicked`, data);
-    this.router.navigate(['module', data.id]);
+
+  onModuleChanged(module: ModuleEditEvent) {
+    console.log(`New Module: `);
   }
 
+  onReadMoreClicked(readMoreEvent: ReadMoreEvent) {
+    this.router.navigate(['module', readMoreEvent.module.id]);
+  }
+
+
 }
+

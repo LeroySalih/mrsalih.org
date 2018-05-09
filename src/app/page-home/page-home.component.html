@@ -1,20 +1,15 @@
+
 <section class="content" *ngFor="let module of modules">
-      <mat-card class="moduleSummary">
-        <mat-card-title>{{module.title}}</mat-card-title>
-        <mat-card-subtitle>{{module.subtitle}}</mat-card-subtitle>
-        <mat-card-content class="moduleSummaryContent">
-            
-            <img src="{{module.thumbnailUrl}}" class="moduleSummaryThumbnail"/>
-            <div class="moduleSummaryContentText" >
-              <div [innerHTML]="module.bodyText"></div>
-            </div>
-        
-        </mat-card-content>
-        <mat-card-actions style="text-align: right">
-          <button mat-raised-button (click)="OnReadMoreClick(module)">read more...</button>
-        </mat-card-actions>
-      </mat-card>
+    <app-cp-module-summary 
+
+          (moduleEdit)="onModuleChanged($event)"
+          (readMore)="onReadMoreClicked($event)" 
+          [readOnly]="false"
+          [module]="module"></app-cp-module-summary> 
+
 </section> 
+
+
 
 
 

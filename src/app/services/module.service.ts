@@ -11,8 +11,10 @@ export class ModuleService {
   collection: AngularFirestoreCollection<Module>;
   modules: Observable<ModuleId[]>;
   modules$: BehaviorSubject<ModuleId[]>;
+  afs: AngularFirestore;
 
   constructor(afs: AngularFirestore) {
+    this.afs = afs;
     this.modules$ = new BehaviorSubject<ModuleId[]>(null);
 
    // this.collection = afs.collection<Module>('modules');
@@ -30,6 +32,10 @@ export class ModuleService {
     //  console.log(`[module-service::constructor] sending`, data);
       this.modules$.next(data);
     });
+  }
+
+  saveModule (module: ModuleId): Promise<void> {
+    return this.afs.doc(`modules/${module.id}`).set(module);
   }
 
 }
