@@ -10,13 +10,13 @@
             </div>
             <!-- list of addresses -->
             <div formArrayName="notes">
-                    <div *ngFor="let note of myForm.controls.notes.controls; let i=index">
+                    <div *ngFor="let note of myForm['controls'].notes['controls']; let i=index">
                         
             
                         <!-- Angular assigns array index as group name by default 0, 1, 2, ... -->
                         <div [formGroupName]="i">
                             <span>{{i + 1}}</span>
-                            <span *ngIf="myForm.controls.notes.controls.length > 0" (click)="removeNote(i)">Remove</span>
+                            <span *ngIf="myForm['controls'].notes['controls'].length > 0" (click)="removeNote(i)">Remove</span>
                         
                                 <!--time-->
                                 <div>

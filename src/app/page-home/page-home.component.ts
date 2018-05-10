@@ -5,7 +5,7 @@ import { MessageService } from 'primeng/components/common/messageservice';
 import { ModuleId } from '../models/module';
 import { ModuleService } from '../services/module.service';
 
-import {ModuleEditEvent, ReadMoreEvent} from '../cp-module-summary/cp-module-summary.component';
+import {ModuleEvent} from '../cp-module-summary/cp-module-summary.component';
 
 import { MatDialog, MatDialogConfig } from '@angular/material';
 
@@ -35,16 +35,28 @@ export class PageHomeComponent implements OnInit {
     });
   }
 
-  onReadMoreClicked(readMoreEvent: ReadMoreEvent) {
-    this.router.navigate(['module', readMoreEvent.module.id]);
+  readMoreClicked(module: ModuleId) {
+    this.router.navigate(['module', module.id]);
   }
 
-  onNewModule () {
-    this.onModuleChanged({ module: null} as ModuleEditEvent);
+  onModuleChanged (event: ModuleEvent) {
+    console.log(`[onModuleChanged] `, event);
+    switch (event.type) {
+      case 'READ' : this.readMoreClicked(event.module); break;
+      case 'NEW': this.moduleNew(); break;
+      case 'EDIT': this.moduleChanged(event.module); break;
+      case 'DELETE' : this.moduleDelete(event.module); break;
+
+    }
   }
 
-  onModuleChanged(module: ModuleEditEvent) {
-    console.log(`[onModuleChanged]`, module);
+  moduleNew () {
+    console.log(`[moduleNew]`, module);
+    this.moduleChanged(null as ModuleId);
+  }
+
+  moduleChanged(module: ModuleId) {
+    console.log(`[moduleChanged]`, module);
     const dialogConfig = new MatDialogConfig();
 
     dialogConfig.disableClose = false;
@@ -68,6 +80,14 @@ export class PageHomeComponent implements OnInit {
 
         }
     );
+  }
+
+  moduleDelete(module: ModuleId) {
+    console.log(`[moduleDelete] called`, module);
+    this.moduleService.deleteModule(module)
+        .then(() => {
+          this.messageService.add({severity: 'success', summary: 'module deleted'});
+        });
   }
 
 

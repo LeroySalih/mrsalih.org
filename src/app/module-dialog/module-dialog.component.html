@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>{{Description}}</h2>
+<h2 mat-dialog-title>{{description}}</h2>
 <mat-dialog-content [formGroup]="form">
   <mat-form-field>
     <input matInput placeholder="Module Title" formControlName="title">
@@ -15,7 +15,9 @@
   </mat-form-field>
   <div></div>
   <p-editor formControlName="bodyText" [style]="{'height':'320px'}"></p-editor>
-    
+  <p-checkbox name="softwareIcons" label="Python" value="/assets/images/python_logo.png" [formControl]="form.controls['softwareIcons']"></p-checkbox>
+  <p-checkbox name="softwareIcons" label="Flowgorithm" value="/assets/images/flowgorithm_logo.png" [formControl]="form.controls['softwareIcons']"></p-checkbox>
+  
 </mat-dialog-content>
 <mat-dialog-actions>
   <button class="mat-raised-button" (click)="close()">Close</button>

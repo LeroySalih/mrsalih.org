@@ -5,6 +5,7 @@ export interface Module {
     bodyText: string;
     order: number;
     category: string;
+    softwareIcons: string[];
   }
 
 export interface ModuleId extends Module { id: string; }

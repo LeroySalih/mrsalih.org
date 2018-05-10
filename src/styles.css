@@ -13,3 +13,7 @@ html, body {
     margin: 0px;
     font-family: Roboto,"Helvetica Neue",sans-serif;
 }
+
+.ui-menu .ui-menuitem-link {
+    text-align: left;
+}

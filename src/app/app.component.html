@@ -7,9 +7,7 @@
             <button mat-button *ngIf="!userProfile" (click)="OnLogIn()">Log In</button>
             <button mat-button *ngIf="userProfile" (click)="OnLogOut()">Log Out {{userProfile['name']}} ({{userProfile['className']}})</button>
             <p-button label="Click" ></p-button>
-            <p-rating [(ngModel)]="val"></p-rating>    
-            <p-triStateCheckbox [(ngModel)]="value" label="Item Label"></p-triStateCheckbox>
-
+            
     </mat-sidenav>
     <mat-sidenav-content>
             <section class="siteMenu">
@@ -17,7 +15,7 @@
                     Challenge-Progress
                 </section>
                 
-                <p-growl [(value)]="msgs"></p-growl>
+                <p-growl ></p-growl>
                 <router-outlet></router-outlet>
     </mat-sidenav-content>
     

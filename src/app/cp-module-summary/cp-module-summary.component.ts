@@ -1,11 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ModuleId } from '../models/module';
+import { MenuItem } from 'primeng/api';
 
-export class  ModuleEditEvent {
-  module: ModuleId;
-}
-
-export class ReadMoreEvent {
+export class  ModuleEvent {
+  type: string;
   module: ModuleId;
 }
 
@@ -23,29 +21,37 @@ export class CpModuleSummaryComponent implements OnInit {
   readOnly: boolean;
 
   @Output()
-  moduleEdit: EventEmitter<ModuleEditEvent>;
+  moduleEvent: EventEmitter<ModuleEvent>;
 
-  @Output()
-  readMore: EventEmitter<ReadMoreEvent>;
+  items:  MenuItem[];
 
   constructor() {
-    this.moduleEdit = new EventEmitter<ModuleEditEvent>();
-    this.readMore = new EventEmitter<ReadMoreEvent>();
-   }
+    this.moduleEvent = new EventEmitter<ModuleEvent>();
+
+    this.items = [
+      {label: 'Edit', icon: 'fa-edit', command: () => {  this.OnEditModuleClick(); }},
+      {label: 'Delete', icon: 'fa-trash', command: () => {  this.OnDeleteModuleClick(); }},
+    ];
+  }
 
   ngOnInit() {
   }
 
   OnReadMoreClick(data: ModuleId) {
-    this.readMore.emit({module: this.module});
+    this.moduleEvent.emit({type: 'READ', module: this.module});
     console.log('[OnReadMore] sending: ', {module: this.module});
     // this.router.navigate(['module', data.id]);
   }
 
 
-  OnEditModuleClick(module: ModuleId) {
-    this.moduleEdit.emit({module: module});
-    console.log('[OnReadMore] sending: ', {module: this.module});
+  OnEditModuleClick() {
+    this.moduleEvent.emit({type: 'EDIT', module: this.module});
+    console.log('[OnEditModuleClick] sending: ', {module: this.module});
+  }
+
+  OnDeleteModuleClick() {
+    this.moduleEvent.emit({type: 'DELETE', module: this.module});
+    console.log('[OnDeleteModuleClick] sending: ', {module: this.module});
   }
 
 }

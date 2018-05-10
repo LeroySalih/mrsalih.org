@@ -39,12 +39,17 @@ export class ModuleService {
 
     console.log(`[saveModule] received `, module );
 
-    if (module.id === undefined) {
+    if (module.id === undefined || module.id === null) {
       console.log(`Module Id is undefined, creating new`);
       module.id = uuid();
       module.order = 0;
     }
+
     return this.afs.doc(`modules/${module.id}`).set(module);
+  }
+
+  deleteModule(module: ModuleId): Promise<void> {
+    return this.afs.doc(`modules/${module.id}`).delete();
   }
 
 }

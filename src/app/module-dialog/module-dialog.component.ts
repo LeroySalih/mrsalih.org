@@ -17,6 +17,7 @@ export class ModuleDialogComponent implements OnInit {
 
   form: FormGroup;
   module: ModuleId;
+  description: string;
 
   title: string;
   subtitle: string;
@@ -28,12 +29,13 @@ export class ModuleDialogComponent implements OnInit {
 
     console.log(`[Constructor] received: `, data);
 
-    if (data.module) {
-      this.module = data.module;
+    this.description = 'Edit Module';
+
+    if (data) {
+      this.module = data;
     } else {
-      this.module = {id: null, title: '', category: '', subtitle: '', bodyText: '', thumbnailUrl: null, order: 0};
+      this.module = {id: null, title: '', category: '', subtitle: '', bodyText: '', thumbnailUrl: null, order: 0, softwareIcons: []};
     }
-    
 
    }
 
@@ -44,7 +46,8 @@ export class ModuleDialogComponent implements OnInit {
       title: [this.module.title, []],
       subtitle: [this.module.title, []],
       category: [this.module.category, []],
-      bodyText: [this.module.bodyText, []]
+      bodyText: [this.module.bodyText, []],
+      softwareIcons: [this.module.softwareIcons, []]
     });
 
 
@@ -58,7 +61,7 @@ export class ModuleDialogComponent implements OnInit {
     this.module.subtitle = this.form.value.subtitle;
     this.module.bodyText = this.form.value.bodyText;
     this.module.category = this.form.value.category;
-
+    this.module.softwareIcons = this.form.value.softwareIcons;
     this.dialogRef.close(this.module);
   }
 
