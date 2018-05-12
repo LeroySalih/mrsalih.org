@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { ModuleId } from '../models/module';
+import { ModuleId } from '../../models/module';
 
 interface ModuleEditEvent {
   module: ModuleId;

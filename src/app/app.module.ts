@@ -39,7 +39,9 @@ import { Message} from 'primeng/components/common/api';
 import { MessageService} from 'primeng/components/common/messageservice';
 import { CpModuleSummaryComponent } from './cp-module-summary/cp-module-summary.component';
 import { MatDialogModule } from '@angular/material';
-import { ModuleDialogComponent } from './module-dialog/module-dialog.component';
+import { ModuleDialogComponent } from './dialogs/module-dialog/module-dialog.component';
+import { LessonDialogComponent } from './dialogs/lesson-dialog/lesson-dialog.component';
+import { CpLessonSummaryComponent } from './cp-lesson-summary/cp-lesson-summary.component';
 
 
 const appRoutes: Routes = [
@@ -65,6 +67,8 @@ const appRoutes: Routes = [
     CpEmbedTextContentComponent,
     CpModuleSummaryComponent,
     ModuleDialogComponent,
+    LessonDialogComponent,
+    CpLessonSummaryComponent,
   ],
   imports: [
     BrowserModule,
@@ -95,6 +99,6 @@ const appRoutes: Routes = [
 
   ],
   bootstrap: [AppComponent],
-  entryComponents: [AppComponent, ModuleDialogComponent]
+  entryComponents: [AppComponent, ModuleDialogComponent, LessonDialogComponent]
 })
 export class AppModule { }

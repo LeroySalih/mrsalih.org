@@ -1,0 +1,7 @@
+<p-card  class="lessonSummary" title="{{lesson.title}}">
+    <p-header></p-header>
+    {{lesson.subtitle}}
+    <p-footer>
+        <p-splitButton label="Read More" icon="fa-check" (onClick)="onReadMoreClick()" [model]="items" ></p-splitButton>
+    </p-footer>
+</p-card>

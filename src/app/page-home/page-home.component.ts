@@ -9,7 +9,7 @@ import {ModuleEvent} from '../cp-module-summary/cp-module-summary.component';
 
 import { MatDialog, MatDialogConfig } from '@angular/material';
 
-import { ModuleDialogComponent} from '../module-dialog/module-dialog.component';
+import { ModuleDialogComponent} from '../dialogs/module-dialog/module-dialog.component';
 
 @Component({
   selector: 'app-page-home',

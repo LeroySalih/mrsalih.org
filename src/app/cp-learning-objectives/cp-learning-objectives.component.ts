@@ -3,6 +3,8 @@ import { LearningObjective } from '../models/learning-objective';
 import { LessonProgress } from '../models/lesson-progress';
 import { LearningObjectiveFeedback } from '../models/learning-objective-feedback';
 import { OnStatusChangeEvent } from '../cp-learning-objective/cp-learning-objective.component';
+import { MenuItem } from 'primeng/api';
+
 @Component({
   selector: 'app-cp-learning-objectives',
   templateUrl: './cp-learning-objectives.component.html',
@@ -21,9 +23,11 @@ export class CpLearningObjectivesComponent implements OnInit {
 
   @Output()
   statusChange: EventEmitter<OnStatusChangeEvent>;
+
   constructor() {
     this.statusChange = new EventEmitter<OnStatusChangeEvent>();
   }
+
 
   ngOnInit() {
     console.log(this.loProgress);

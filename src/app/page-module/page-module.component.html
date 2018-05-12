@@ -11,15 +11,19 @@
     <h2 class="mat-h2">Feedback</h2>
   </div>
   <div class="moduleLessons">
-    <h3 class="mat-h2">Lessons</h3>
-    <table>
-      <tr *ngFor="let lesson of lessons; let i = index">
-        <td>
-          <a routerLink="/lesson/{{lesson.id}}">Lesson {{i  + 1 }}</a></td>
-        <td><b>{{lesson.title}}</b></td>
-        <td><i>{{lesson.subtitle}}</i></td>
-      </tr>
-    </table>
+    <div style="display: flex; flex-direction: row">
+        <h3 class="mat-h2" style="margin-left: 5px; flex-grow: 1">
+            Lessons
+          </h3>
+          <p-button style="margin-right: 5px;" icon="fa fa-fw fa-plus" label="New" (click)="onNewLessonClick()"></p-button>
+          
+    </div>
+    
+    <app-cp-lesson-summary *ngFor="let lesson of lessons;" [lesson]="lesson" (lessonEvent)="onLessonEvent($event)">
+
+    </app-cp-lesson-summary>
+    
+
   </div>
 </section>
 

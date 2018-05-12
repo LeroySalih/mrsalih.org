@@ -2,7 +2,7 @@
         <h1 class="mat-title">{{lesson.title}}</h1>
         <h2 class="mat-subheading-1">{{lesson.subtitle}}</h2>
 </section>
-<section class="pageContainer">
+<section class="pageContainer" *ngIf="lesson">
         
               <section>
                   <app-cp-learning-objectives 
