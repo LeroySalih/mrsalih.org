@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
-import { Module, ModuleId} from './models/module';
+import { Module} from './models/module';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { UserService } from './services/user.service';
 import { UserProfile } from './models/user-profile';
@@ -18,8 +18,7 @@ import { MessageService } from 'primeng/components/common/messageservice';
 export class AppComponent implements OnInit, OnDestroy {
 
   title = 'app';
-  modulesSub: Subscription;
-  modules: ModuleId[];
+
   userProfile: UserProfile;
   val = 2;
   constructor(private moduleService: ModuleService,
@@ -47,7 +46,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
 
   ngOnDestroy() {
-    this.modulesSub.unsubscribe();
+
   }
 
   OnLogOut() {

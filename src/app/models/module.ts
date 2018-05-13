@@ -6,6 +6,6 @@ export interface Module {
     order: number;
     category: string;
     softwareIcons: string[];
-  }
+    id: string;
 
-export interface ModuleId extends Module { id: string; }
+  }

@@ -3,7 +3,6 @@ import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument 
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-import { LearningObjective, LearningObjectiveBase } from '../models/learning-objective';
 import { SectionNotes } from '../models/section-notes';
 
 @Injectable()

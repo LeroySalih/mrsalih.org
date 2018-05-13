@@ -1,10 +1,10 @@
 import { Component, OnInit, Inject, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { ModuleId } from '../../models/module';
+import { Module } from '../../models/module';
 
 interface ModuleEditEvent {
-  module: ModuleId;
+  module: Module;
 }
 
 
@@ -16,7 +16,7 @@ interface ModuleEditEvent {
 export class ModuleDialogComponent implements OnInit {
 
   form: FormGroup;
-  module: ModuleId;
+  module: Module;
   description: string;
 
   title: string;

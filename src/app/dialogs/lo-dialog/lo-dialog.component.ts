@@ -15,6 +15,7 @@ export class LODialogComponent implements OnInit {
   title: string;
   lo: LearningObjective;
   form: FormGroup;
+  description: 'Learning Objectives';
 
   constructor(private fb: FormBuilder,
     private dialogRef: MatDialogRef<LODialogComponent>,

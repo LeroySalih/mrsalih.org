@@ -3,20 +3,19 @@ import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/fires
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-import { Module, ModuleId } from '../models/module';
+import { Module } from '../models/module';
 import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class ModuleService {
 
-  collection: AngularFirestoreCollection<Module>;
-  modules: Observable<ModuleId[]>;
-  modules$: BehaviorSubject<ModuleId[]>;
-  afs: AngularFirestore;
+  // collection: AngularFirestoreCollection<Module>;
+  // modules: Observable<Module[]>;
+  // modules$: BehaviorSubject<Module[]>;
 
-  constructor(afs: AngularFirestore) {
-    this.afs = afs;
-    this.modules$ = new BehaviorSubject<ModuleId[]>(null);
+  constructor(private afs: AngularFirestore) {
+    /*
+    this.modules$ = new BehaviorSubject<Module[]>(null);
 
    // this.collection = afs.collection<Module>('modules');
     this.collection = afs.collection<Module>('modules', ref => ref.orderBy('order', 'asc'));
@@ -33,9 +32,16 @@ export class ModuleService {
     //  console.log(`[module-service::constructor] sending`, data);
       this.modules$.next(data);
     });
+    */
   }
 
-  saveModule (module: ModuleId): Promise<void> {
+  getModules(): Observable<Module[]> {
+    const collection = this.afs.collection<Module>('modules', ref => ref.orderBy('order', 'asc'));
+
+    return collection.valueChanges();
+  }
+
+  saveModule (module: Module): Promise<void> {
 
     console.log(`[saveModule] received `, module );
 
@@ -48,7 +54,7 @@ export class ModuleService {
     return this.afs.doc(`modules/${module.id}`).set(module);
   }
 
-  deleteModule(module: ModuleId): Promise<void> {
+  deleteModule(module: Module): Promise<void> {
     return this.afs.doc(`modules/${module.id}`).delete();
   }
 

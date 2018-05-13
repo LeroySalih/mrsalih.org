@@ -1,10 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { ModuleId } from '../models/module';
+import { Module } from '../models/module';
 import { MenuItem } from 'primeng/api';
 
 export class  ModuleEvent {
   type: string;
-  module: ModuleId;
+  module: Module;
 }
 
 @Component({
@@ -15,7 +15,7 @@ export class  ModuleEvent {
 export class CpModuleSummaryComponent implements OnInit {
 
   @Input()
-  module: ModuleId;
+  module: Module;
 
   @Input()
   readOnly: boolean;
@@ -37,7 +37,7 @@ export class CpModuleSummaryComponent implements OnInit {
   ngOnInit() {
   }
 
-  OnReadMoreClick(data: ModuleId) {
+  OnReadMoreClick(data: Module) {
     this.moduleEvent.emit({type: 'READ', module: this.module});
     console.log('[OnReadMore] sending: ', {module: this.module});
     // this.router.navigate(['module', data.id]);

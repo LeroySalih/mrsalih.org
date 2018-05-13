@@ -8,40 +8,23 @@ import { LessonSection, LessonSectionId } from '../models/lesson-section';
 @Injectable()
 export class LessonSectionService {
 
-  collection: AngularFirestoreCollection<LessonSection>;
-  LessonSections: Observable<LessonSectionId[]>;
-  LessonSections$: BehaviorSubject<LessonSectionId[]>;
-
-  lesson$: BehaviorSubject<LessonSection>;
 
   constructor(private afs: AngularFirestore) {
-    this.LessonSections$ = new BehaviorSubject<LessonSectionId[]>(null);
-    this.lesson$ = new BehaviorSubject<LessonSection>(null);
   }
 
   getLessonSections(lessonId: string): Observable<LessonSection[]> {
 
-    this.collection = this.afs.collection<LessonSection>
+    const collection = this.afs.collection<LessonSection>
           ('lesson-sections', ref => ref.where('lessonId', '==', lessonId).orderBy('order', 'asc'));
-    return this.collection.snapshotChanges().map(actions => {
-      return actions.map(a => {
-        const data = a.payload.doc.data() as LessonSection;
-        const id = a.payload.doc.id;
 
-        return {id, ...data};
-      });
-    });
+    return collection.valueChanges();
+
   }
 
-  getLessonSection(lessonId: string) {
+  getLessonSection(lessonId: string): Observable<LessonSection> {
 
     const document: AngularFirestoreDocument<LessonSectionId> = this.afs.doc(`lessons/${lessonId}`);
-    const document$: Observable<LessonSection> = document.valueChanges();
-
-    document$.subscribe((data: LessonSection) => {
-        console.log(`[lesson-service::getLessonSection] sending`, data);
-        this.lesson$.next(data);
-    });
+    return document.valueChanges();
 
   }
 

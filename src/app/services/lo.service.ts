@@ -3,7 +3,7 @@ import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument 
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-import { LearningObjective, LearningObjectiveBase } from '../models/learning-objective';
+import { LearningObjective } from '../models/learning-objective';
 import { v4 as uuid } from 'uuid';
 
 @Injectable()
@@ -16,19 +16,12 @@ export class LOService {
 
   getLearningObjectives(lessonId: string): Observable<LearningObjective[]> {
 
-    const collection = this.afs.collection<LearningObjectiveBase>
+    const collection = this.afs.collection<LearningObjective>
           (this.LO_COLLECTION, ref => ref
               .where('lessonId', '==', lessonId)
               .orderBy('order', 'asc'));
 
-    return collection.snapshotChanges().map(actions => {
-      return actions.map(a => {
-        const data = a.payload.doc.data() as LearningObjectiveBase;
-        const id = a.payload.doc.id;
-
-        return {id, ...data};
-      });
-    });
+    return collection.valueChanges();
 
   }
 

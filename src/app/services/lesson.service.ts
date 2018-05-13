@@ -10,36 +10,23 @@ import { v4 as uuid } from 'uuid';
 @Injectable()
 export class LessonService {
 
-  collection: AngularFirestoreCollection<Lesson>;
-
-  lesson$: BehaviorSubject<Lesson>;
-
-  lessons: LessonId[];
-
-
   constructor(private afs: AngularFirestore) {
 
   }
 
-  getLessons(moduleId: string): Observable<any> {
+  getLessons(moduleId: string): Observable<Lesson[]> {
 
     console.log(`[getLessons]`, moduleId);
-    const collection: AngularFirestoreCollection<Lesson> =
-      this.afs.collection<Lesson>('lessons', ref => ref.where('moduleId', '==', moduleId).orderBy('order', 'asc'));
 
-    return collection.snapshotChanges().map(actions => {
-      console.log(`[getLessons::snapChanges] updating data`);
-      return actions.map(a => {
-        const data = a.payload.doc.data() as Lesson;
-        const id = a.payload.doc.id;
+    const collection = this.afs.collection<Lesson>('lessons', ref => ref.where('moduleId', '==', moduleId).orderBy('order', 'asc'));
 
-        return {id, ...data};
-      });
-    });
+    return collection.valueChanges();
 
   }
 
   getLesson(lessonId: string): Observable<LessonId> {
+
+    console.log(`[getLesson] subscribing to `, lessonId);
 
     const document: AngularFirestoreDocument<LessonId> = this.afs.doc(`lessons/${lessonId}`);
     return document.valueChanges();

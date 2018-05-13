@@ -2,7 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import {Router} from '@angular/router';
 import { MessageService } from 'primeng/components/common/messageservice';
 
-import { ModuleId } from '../models/module';
+import { Module } from '../models/module';
 import { ModuleService } from '../services/module.service';
 
 import {ModuleEvent} from '../cp-module-summary/cp-module-summary.component';
@@ -18,7 +18,7 @@ import { ModuleDialogComponent} from '../dialogs/module-dialog/module-dialog.com
 })
 export class PageHomeComponent implements OnInit {
 
-  modules: ModuleId[];
+  modules: Module[];
 
   animal: string;
 
@@ -29,13 +29,13 @@ export class PageHomeComponent implements OnInit {
               ) { }
 
   ngOnInit() {
-    this.moduleService.modules$.subscribe((data) => {
+    this.moduleService.getModules().subscribe((data: Module[]) => {
       console.log(`[app-page-home::ngInit] Received:`, data);
       this.modules = data;
     });
   }
 
-  readMoreClicked(module: ModuleId) {
+  readMoreClicked(module: Module) {
     this.router.navigate(['module', module.id]);
   }
 
@@ -52,10 +52,10 @@ export class PageHomeComponent implements OnInit {
 
   moduleNew () {
     console.log(`[moduleNew]`, module);
-    this.moduleChanged(null as ModuleId);
+    this.moduleChanged(null as Module);
   }
 
-  moduleChanged(module: ModuleId) {
+  moduleChanged(module: Module) {
     console.log(`[moduleChanged]`, module);
     const dialogConfig = new MatDialogConfig();
 
@@ -70,7 +70,7 @@ export class PageHomeComponent implements OnInit {
         (data) => {
           console.log('Dialog output:', data);
           if (data) {
-            this.moduleService.saveModule(data as ModuleId)
+            this.moduleService.saveModule(data as Module)
             .then(() => {
                 this.messageService.add(
                   {severity: 'success', summary: 'Module Saved'}
@@ -82,7 +82,7 @@ export class PageHomeComponent implements OnInit {
     );
   }
 
-  moduleDelete(module: ModuleId) {
+  moduleDelete(module: Module) {
     console.log(`[moduleDelete] called`, module);
     this.moduleService.deleteModule(module)
         .then(() => {
