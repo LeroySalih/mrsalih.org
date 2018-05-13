@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { LearningObjective, LearningObjectiveBase } from '../models/learning-objective';
+import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class LOService {
@@ -29,6 +30,21 @@ export class LOService {
       });
     });
 
+  }
+
+  saveLO (lo: LearningObjective): Promise<void> {
+
+    console.log(`[saveLO]`, lo);
+
+    if (lo.id === undefined || lo.id === null) {
+      lo.id = uuid();
+    }
+
+    return this.afs.doc(`${this.LO_COLLECTION}/${lo.id}`).set(lo);
+  }
+
+  deleteLO (lo: LearningObjective): Promise<void> {
+    return this.afs.doc(`${this.LO_COLLECTION}/${lo.id}`).delete();
   }
 
 }

@@ -42,6 +42,7 @@ import { MatDialogModule } from '@angular/material';
 import { ModuleDialogComponent } from './dialogs/module-dialog/module-dialog.component';
 import { LessonDialogComponent } from './dialogs/lesson-dialog/lesson-dialog.component';
 import { CpLessonSummaryComponent } from './cp-lesson-summary/cp-lesson-summary.component';
+import { LODialogComponent } from './dialogs/lo-dialog/lo-dialog.component';
 
 
 const appRoutes: Routes = [
@@ -69,6 +70,7 @@ const appRoutes: Routes = [
     ModuleDialogComponent,
     LessonDialogComponent,
     CpLessonSummaryComponent,
+    LODialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -99,6 +101,6 @@ const appRoutes: Routes = [
 
   ],
   bootstrap: [AppComponent],
-  entryComponents: [AppComponent, ModuleDialogComponent, LessonDialogComponent]
+  entryComponents: [AppComponent, ModuleDialogComponent, LessonDialogComponent, LODialogComponent]
 })
 export class AppModule { }

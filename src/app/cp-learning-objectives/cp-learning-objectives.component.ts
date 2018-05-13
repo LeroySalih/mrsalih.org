@@ -4,6 +4,10 @@ import { LessonProgress } from '../models/lesson-progress';
 import { LearningObjectiveFeedback } from '../models/learning-objective-feedback';
 import { OnStatusChangeEvent } from '../cp-learning-objective/cp-learning-objective.component';
 import { MenuItem } from 'primeng/api';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+
+import { LOEvent } from '../cp-learning-objective/cp-learning-objective.component';
+
 
 @Component({
   selector: 'app-cp-learning-objectives',
@@ -24,13 +28,22 @@ export class CpLearningObjectivesComponent implements OnInit {
   @Output()
   statusChange: EventEmitter<OnStatusChangeEvent>;
 
-  constructor() {
+  @Output()
+  loEvent: EventEmitter<LOEvent>;
+
+  lessonId: string;
+
+  constructor(private route: ActivatedRoute) {
     this.statusChange = new EventEmitter<OnStatusChangeEvent>();
+    this.loEvent = new EventEmitter<LOEvent>();
   }
 
 
   ngOnInit() {
     console.log(this.loProgress);
+    this.route.params.subscribe((params: ParamMap) => {
+      this.lessonId = params['id'];
+    });
   }
 
   getLoFeedback(lo): string {
@@ -39,6 +52,15 @@ export class CpLearningObjectivesComponent implements OnInit {
 
   onStatusChange(event) {
     this.statusChange.emit(event);
+  }
+  onLOAddClick() {
+    console.log(`[onLOAddClick]`);
+    this.loEvent.emit({type: 'ADD', lo: {id: null, title: '', order: 0, lessonId: this.lessonId}});
+  }
+
+  onLOEvent(event: LOEvent) {
+    console.log(`[onLOEvent] `, event);
+    this.loEvent.emit(event);
   }
 
 }

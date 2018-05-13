@@ -5,7 +5,8 @@
           [lo]="lo"
           [status]="getLoFeedback(lo)"
           (statusChange)="onStatusChange($event)"
+          (loEvent)="onLOEvent($event)"
           >
       </app-cp-learning-objective>
-      <p-button label="Edit"></p-button>
+      <p-button label="Add" (click)="onLOAddClick()"></p-button>
 </mat-card>

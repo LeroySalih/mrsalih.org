@@ -14,6 +14,8 @@ import { LearningObjective } from '../models/learning-objective';
 import { LOService } from '../services/lo.service';
 import { LOProgressService } from '../services/lo-progress.service';
 
+import { MatDialog, MatDialogConfig } from '@angular/material';
+
 import { LessonSection } from '../models/lesson-section';
 import { UserService } from '../services/user.service';
 import { UserProfile } from '../models/user-profile';
@@ -22,6 +24,11 @@ import { LessonProgress } from '../models/lesson-progress';
 import { LearningObjectiveFeedback } from '../models/learning-objective-feedback';
 import { SectionNotes, VideoNote } from '../models/section-notes';
 import { SectionNotesService } from '../services/section-notes.service';
+
+import { LODialogComponent} from '../dialogs/lo-dialog/lo-dialog.component';
+import { MessageService } from 'primeng/components/common/messageservice';
+import { LOEvent } from '../cp-learning-objective/cp-learning-objective.component';
+
 
 export interface Customer {
   name: string; // required field with minimum 5 characters
@@ -59,6 +66,8 @@ export class PageLessonComponent implements OnInit {
               private userService: UserService,
               private lessonProgressService: LessonProgressService,
               private sectionNotesService: SectionNotesService,
+              private matDialog: MatDialog,
+              private messageService: MessageService,
               private _fb: FormBuilder,
             ) {
 
@@ -137,6 +146,89 @@ export class PageLessonComponent implements OnInit {
       .then(() => { console.log(`Progress updated.`); })
       .catch((err) => {console.log(`Error Updating Progress`, err); });
 
+  }
+
+  getNextOrder(los: LearningObjective[]) {
+
+    let nextOrder = 0;
+
+    los.forEach((lo) => {
+      nextOrder = Math.max(nextOrder, lo.order);
+    });
+
+    return (los) ? nextOrder + 1 : 0;
+  }
+  onNewLOEvent(event) {
+    console.log(`[onLOEvent]`, event);
+
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = false;
+    dialogConfig.autoFocus = true;
+
+    dialogConfig.data = event.lo;
+    dialogConfig.data.order = this.getNextOrder(this.los);
+
+    const dialogRef = this.matDialog.open(LODialogComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(
+      (data) => {
+        console.log('[newLO] from dlg: ', data);
+        if (data) {
+           this.loService.saveLO(data as LearningObjective)
+           .then(() => {
+              this.messageService.add(
+                {severity: 'success', summary: 'Module Saved'}
+              );
+            });
+        }
+
+      }
+  );
+
+  }
+
+  onEditLO(lo: LearningObjective) {
+    console.log(`onEditLO`, lo);
+
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = false;
+    dialogConfig.autoFocus = true;
+
+    dialogConfig.data = lo;
+    // dialogConfig.data.order = this.getNextOrder(this.los);
+
+    const dialogRef = this.matDialog.open(LODialogComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(
+      (data) => {
+        console.log('[editLO] from dlg: ', data);
+        if (data) {
+           this.loService.saveLO(data as LearningObjective)
+           .then(() => {
+              this.messageService.add(
+                {severity: 'success', summary: 'Module Saved'}
+              );
+            });
+        }
+
+      }
+  );
+  }
+
+  onDeleteLO (lo: LearningObjective) {
+    console.log(`onDeleteLO`, lo);
+
+    this.loService.deleteLO(lo)
+      .then(() => {
+        this.messageService.add({severity: 'success', summary: 'LO Deleted'});
+      });
+  }
+
+  onLOEvent(event: LOEvent) {
+    switch (event.type) {
+      case 'EDIT' : return this.onEditLO(event.lo);
+      case 'DELETE': return this.onDeleteLO(event.lo);
+    }
   }
 
   saveSectionNote(event) {

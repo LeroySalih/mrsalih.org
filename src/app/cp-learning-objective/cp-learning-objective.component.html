@@ -1,8 +1,9 @@
 <div>
     <div style="display:flex; flex-direction: row">
-            <div class="mat-body-1" style="flex:1">
-                    {{lo.title}}
-            </div>    
+            <div class="mat-body-1" style="flex:1" class="loButton">
+                 <p-splitButton styleClass="{{getLOStyle(status)}}" [label]="lo.title" [model]="items"></p-splitButton>
+            </div>  
+        <!--      
         <form>
             <mat-form-field>    
                 <mat-select (selectionChange)="onStatusChange($event)" [(value)]="status">
@@ -12,5 +13,6 @@
                 </mat-select>
             </mat-form-field>
         </form>
+    -->
     </div>
   </div>
