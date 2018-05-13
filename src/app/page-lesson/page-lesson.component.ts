@@ -158,14 +158,14 @@ export class PageLessonComponent implements OnInit {
 
     return (los) ? nextOrder + 1 : 0;
   }
-  onNewLOEvent(event) {
+  onNewLO(lo: LO) {
     console.log(`[onLOEvent]`, event);
 
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = false;
     dialogConfig.autoFocus = true;
 
-    dialogConfig.data = event.lo;
+    dialogConfig.data = lo;
     dialogConfig.data.order = this.getNextOrder(this.los);
 
     const dialogRef = this.matDialog.open(LODialogComponent, dialogConfig);
@@ -226,8 +226,10 @@ export class PageLessonComponent implements OnInit {
 
   onLOEvent(event: LOEvent) {
     switch (event.type) {
+      case 'ADD' : return this.onNewLO(event.lo);
       case 'EDIT' : return this.onEditLO(event.lo);
       case 'DELETE': return this.onDeleteLO(event.lo);
+      default: console.error(`[onLOEvent] UNKNOWN LOEvent type`); break;
     }
   }
 

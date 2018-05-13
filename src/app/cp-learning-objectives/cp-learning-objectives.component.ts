@@ -55,7 +55,7 @@ export class CpLearningObjectivesComponent implements OnInit {
   }
   onLOAddClick() {
     console.log(`[onLOAddClick]`);
-    this.loEvent.emit({type: 'ADD', lo: {id: null, title: '', order: 0, lessonId: this.lessonId}});
+    this.loEvent.emit({type: 'ADD', lo: {id: null, title: '', order: 0, lessonId: this.lessonId}} as LOEvent);
   }
 
   onLOEvent(event: LOEvent) {
