@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { LearningObjective } from '../models/learning-objective';
+import { LO } from '../models/lo';
 import { LessonProgress } from '../models/lesson-progress';
-import { LearningObjectiveFeedback } from '../models/learning-objective-feedback';
+import { LOProgress } from '../models/lo-progress';
 import { OnStatusChangeEvent } from '../cp-learning-objective/cp-learning-objective.component';
 import { MenuItem } from 'primeng/api';
 import { ActivatedRoute, ParamMap } from '@angular/router';
@@ -17,13 +17,13 @@ import { LOEvent } from '../cp-learning-objective/cp-learning-objective.componen
 export class CpLearningObjectivesComponent implements OnInit {
 
   @Input()
-  los: LearningObjective[];
+  los: LO[];
 
   @Input()
   lessonProgress: LessonProgress[];
 
   @Input()
-  loProgress: { [id: string]:  LearningObjectiveFeedback}  = {};
+  loProgress: { [id: string]:  LOProgress}  = {};
 
   @Output()
   statusChange: EventEmitter<OnStatusChangeEvent>;

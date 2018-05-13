@@ -9,8 +9,8 @@ import { Observable} from 'rxjs/Observable';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 
-import { LessonId, Lesson } from '../models/lesson';
-import { LearningObjective } from '../models/learning-objective';
+import { Lesson } from '../models/lesson';
+import { LO } from '../models/lo';
 import { LOService } from '../services/lo.service';
 import { LOProgressService } from '../services/lo-progress.service';
 
@@ -21,7 +21,7 @@ import { UserService } from '../services/user.service';
 import { UserProfile } from '../models/user-profile';
 import { LessonProgressService } from '../services/lesson-progress.service';
 import { LessonProgress } from '../models/lesson-progress';
-import { LearningObjectiveFeedback } from '../models/learning-objective-feedback';
+import { LOProgress } from '../models/lo-progress';
 import { SectionNotes, VideoNote } from '../models/section-notes';
 import { SectionNotesService } from '../services/section-notes.service';
 
@@ -52,8 +52,8 @@ export class PageLessonComponent implements OnInit {
   lesson: Lesson;
   sections: LessonSection[];
   lessonProgresses: any = {};
-  los: LearningObjective[];
-  loProgress: {[id: string]: LearningObjectiveFeedback} = {};  // { [id: string]:  string}  = {};
+  los: LO[];
+  loProgress: {[id: string]: LOProgress} = {};  // { [id: string]:  string}  = {};
   sectionNotes: { [ id: string]: VideoNote[]} = {};
 
   public myForm: FormGroup; // our form model
@@ -134,7 +134,7 @@ export class PageLessonComponent implements OnInit {
   onLOStatusChange(event) {
     console.log(`onLOStatusChange`, event);
 
-     const lop: LearningObjectiveFeedback = {
+     const lop: LOProgress = {
       userId: this.userProfile.authenticationId,
       className: this.userProfile.className,
       learningObjectiveId: event.lo.id,
@@ -148,7 +148,7 @@ export class PageLessonComponent implements OnInit {
 
   }
 
-  getNextOrder(los: LearningObjective[]) {
+  getNextOrder(los: LO[]) {
 
     let nextOrder = 0;
 
@@ -174,7 +174,7 @@ export class PageLessonComponent implements OnInit {
       (data) => {
         console.log('[newLO] from dlg: ', data);
         if (data) {
-           this.loService.saveLO(data as LearningObjective)
+           this.loService.saveLO(data as LO)
            .then(() => {
               this.messageService.add(
                 {severity: 'success', summary: 'Module Saved'}
@@ -187,7 +187,7 @@ export class PageLessonComponent implements OnInit {
 
   }
 
-  onEditLO(lo: LearningObjective) {
+  onEditLO(lo: LO) {
     console.log(`onEditLO`, lo);
 
     const dialogConfig = new MatDialogConfig();
@@ -203,7 +203,7 @@ export class PageLessonComponent implements OnInit {
       (data) => {
         console.log('[editLO] from dlg: ', data);
         if (data) {
-           this.loService.saveLO(data as LearningObjective)
+           this.loService.saveLO(data as LO)
            .then(() => {
               this.messageService.add(
                 {severity: 'success', summary: 'Module Saved'}
@@ -215,7 +215,7 @@ export class PageLessonComponent implements OnInit {
   );
   }
 
-  onDeleteLO (lo: LearningObjective) {
+  onDeleteLO (lo: LO) {
     console.log(`onDeleteLO`, lo);
 
     this.loService.deleteLO(lo)

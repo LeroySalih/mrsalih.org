@@ -3,7 +3,7 @@ import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument 
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-import { LearningObjective } from '../models/learning-objective';
+import { LO } from '../models/lo';
 import { v4 as uuid } from 'uuid';
 
 @Injectable()
@@ -14,9 +14,9 @@ export class LOService {
   constructor(private afs: AngularFirestore) {
   }
 
-  getLearningObjectives(lessonId: string): Observable<LearningObjective[]> {
+  getLearningObjectives(lessonId: string): Observable<LO[]> {
 
-    const collection = this.afs.collection<LearningObjective>
+    const collection = this.afs.collection<LO>
           (this.LO_COLLECTION, ref => ref
               .where('lessonId', '==', lessonId)
               .orderBy('order', 'asc'));
@@ -25,7 +25,7 @@ export class LOService {
 
   }
 
-  saveLO (lo: LearningObjective): Promise<void> {
+  saveLO (lo: LO): Promise<void> {
 
     console.log(`[saveLO]`, lo);
 
@@ -36,7 +36,7 @@ export class LOService {
     return this.afs.doc(`${this.LO_COLLECTION}/${lo.id}`).set(lo);
   }
 
-  deleteLO (lo: LearningObjective): Promise<void> {
+  deleteLO (lo: LO): Promise<void> {
     return this.afs.doc(`${this.LO_COLLECTION}/${lo.id}`).delete();
   }
 

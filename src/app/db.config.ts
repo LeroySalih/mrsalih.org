@@ -1,0 +1,15 @@
+export class DbConfig {
+    public static MODULES = 'modules';
+    public static LESSONS = 'lessons';
+    public static LOS = 'los';
+    public static LESSON_PROGRESS = 'loProgress';
+    public static LO_PROGRESS = 'loProgress';
+    public static SECTIONS = 'sections';
+
+    public static USER_PROFILES = 'userProfiles';
+
+    public static ID_FIELD = 'id';
+    public static ORDER_FIELD = 'order';
+    public static ACS = 'acs';
+
+}

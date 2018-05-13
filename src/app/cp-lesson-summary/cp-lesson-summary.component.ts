@@ -1,11 +1,11 @@
 import { Component, Input, OnInit , Output, EventEmitter} from '@angular/core';
-import { LessonId } from '../models/lesson';
+import { Lesson} from '../models/lesson';
 
 import { MenuItem } from 'primeng/api';
 
 export interface LessonEvent {
   type: string;
-  lesson?: LessonId;
+  lesson?: Lesson;
 }
 
 @Component({
@@ -16,7 +16,7 @@ export interface LessonEvent {
 export class CpLessonSummaryComponent implements OnInit {
 
   @Input()
-  lesson: LessonId;
+  lesson: Lesson;
 
   @Output()
   lessonEvent: EventEmitter<LessonEvent>;

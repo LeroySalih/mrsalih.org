@@ -1,15 +1,15 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { LearningObjective } from '../models/learning-objective';
+import { LO } from '../models/lo';
 import { MenuItem } from 'primeng/api';
 
 export interface OnStatusChangeEvent {
-  lo: LearningObjective;
+  lo: LO;
   status: string;
 }
 
 export class LOEvent {
   type: string;
-  lo?: LearningObjective;
+  lo?: LO;
 }
 
 
@@ -21,7 +21,7 @@ export class LOEvent {
 export class CpLearningObjectiveComponent implements OnInit {
 
   @Input()
-  lo: LearningObjective;
+  lo: LO;
 
   @Output()
   statusChange: EventEmitter<OnStatusChangeEvent>;
@@ -51,13 +51,6 @@ export class CpLearningObjectiveComponent implements OnInit {
   ngOnInit() {
   }
 
-  /*
-  onStatusChange(selectElem) {
-    const event: OnStatusChangeEvent = {lo: this.lo, status: selectElem['value']};
-    this.statusChange.emit(event);
-  }
-
-  */
   onStatusChange(status: string) {
     const event: OnStatusChangeEvent = {lo: this.lo, status: status};
     this.statusChange.emit(event);

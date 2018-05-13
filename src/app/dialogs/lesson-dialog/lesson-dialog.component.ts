@@ -4,7 +4,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 
 
-import { LessonId} from '../../models/lesson';
+import { Lesson} from '../../models/lesson';
 
 @Component({
   selector: 'app-lesson-dialog',
@@ -14,7 +14,7 @@ import { LessonId} from '../../models/lesson';
 export class LessonDialogComponent implements OnInit {
 
   form: FormGroup;
-  lesson: LessonId;
+  lesson: Lesson;
   description: string;
 
   constructor(private fb: FormBuilder,

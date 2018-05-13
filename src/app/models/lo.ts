@@ -1,4 +1,4 @@
-export interface LearningObjective {
+export interface LO {
     order: number;
     title: string;
     lessonId: string;

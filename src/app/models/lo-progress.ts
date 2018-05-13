@@ -1,4 +1,4 @@
-export interface LearningObjectiveFeedback {
+export interface LOProgress {
     lessonId: string;
     learningObjectiveId: string;
     userId: string;

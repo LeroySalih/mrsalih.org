@@ -3,9 +3,10 @@ import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument,
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-import { Lesson, LessonId } from '../models/lesson';
+import { Lesson } from '../models/lesson';
 
 import { v4 as uuid } from 'uuid';
+import { DbConfig } from '../db.config';
 
 @Injectable()
 export class LessonService {
@@ -18,36 +19,36 @@ export class LessonService {
 
     console.log(`[getLessons]`, moduleId);
 
-    const collection = this.afs.collection<Lesson>('lessons', ref => ref.where('moduleId', '==', moduleId).orderBy('order', 'asc'));
+    const collection = this.afs.collection<Lesson>(DbConfig.LESSONS, ref => ref.where('moduleId', '==', moduleId).orderBy('order', 'asc'));
 
     return collection.valueChanges();
 
   }
 
-  getLesson(lessonId: string): Observable<LessonId> {
+  getLesson(lessonId: string): Observable<Lesson> {
 
     console.log(`[getLesson] subscribing to `, lessonId);
 
-    const document: AngularFirestoreDocument<LessonId> = this.afs.doc(`lessons/${lessonId}`);
+    const document: AngularFirestoreDocument<Lesson> = this.afs.doc(`${DbConfig.LESSONS}/${lessonId}`);
     return document.valueChanges();
 
   }
 
-  saveLesson (lesson: LessonId): Promise<void> {
+  saveLesson (lesson: Lesson): Promise<void> {
     console.log(`[saveLesson]`, lesson);
 
     if (lesson.id === undefined || lesson.id === null) {
       console.log(`Lesson Id is undefined, creating new`);
       lesson.id = uuid();
     }
-    return this.afs.doc(`lessons/${lesson.id}`).set(lesson);
+    return this.afs.doc(`${DbConfig.LESSONS}/${lesson.id}`).set(lesson);
   }
 
-  deleteLesson (lesson: LessonId): Promise<void> {
-    return this.afs.doc(`lessons/${lesson.id}`).delete();
+  deleteLesson (lesson: Lesson): Promise<void> {
+    return this.afs.doc(`${DbConfig.LESSONS}/${lesson.id}`).delete();
   }
 
-  swapLessonOrder(lesson: LessonId, swapLesson: LessonId): Promise<void> {
+  swapLessonOrder(lesson: Lesson, swapLesson: Lesson): Promise<void> {
 
     if (lesson === undefined || swapLesson === undefined)  {
       return Promise.reject(new Error('Invalid paramters'));
@@ -57,8 +58,8 @@ export class LessonService {
 
     const batch = this.afs.firestore.batch();
 
-    const lessonRef = this.afs.firestore.doc(`lessons/${lesson.id}`);
-    const swapRef = this.afs.firestore.doc(`lessons/${swapLesson.id}`);
+    const lessonRef = this.afs.firestore.doc(`${DbConfig.LESSONS}/${lesson.id}`);
+    const swapRef = this.afs.firestore.doc(`${DbConfig.LESSONS}/${swapLesson.id}`);
 
     const tmp = swapLesson.order;
     swapLesson.order = lesson.order;

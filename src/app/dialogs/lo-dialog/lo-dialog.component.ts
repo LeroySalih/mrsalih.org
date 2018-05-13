@@ -2,7 +2,7 @@
 import { Component, OnInit, Inject, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { LearningObjective } from '../../models/learning-objective';
+import { LO } from '../../models/lo';
 
 
 @Component({
@@ -13,7 +13,7 @@ import { LearningObjective } from '../../models/learning-objective';
 export class LODialogComponent implements OnInit {
 
   title: string;
-  lo: LearningObjective;
+  lo: LO;
   form: FormGroup;
   description: 'Learning Objectives';
 
@@ -33,7 +33,7 @@ export class LODialogComponent implements OnInit {
 
   save() {
     this.lo.title = this.form.value.title;
-    this.dialogRef.close(this.lo as LearningObjective);
+    this.dialogRef.close(this.lo as LO);
   }
 
   close() {

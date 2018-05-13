@@ -8,7 +8,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material';
 import { MenuItem } from 'primeng/api';
 
 
-import { LessonId } from '../models/lesson';
+import { Lesson } from '../models/lesson';
 import { LessonEvent} from '../cp-lesson-summary/cp-lesson-summary.component';
 import { LessonDialogComponent} from '../dialogs/lesson-dialog/lesson-dialog.component';
 
@@ -21,7 +21,7 @@ import { LessonDialogComponent} from '../dialogs/lesson-dialog/lesson-dialog.com
 export class PageModuleComponent implements OnInit {
 
   moduleId = 'Not Set';
-  lessons: LessonId[];
+  lessons: Lesson[];
 
   items: MenuItem[];
 
@@ -41,14 +41,14 @@ export class PageModuleComponent implements OnInit {
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       this.moduleId = paramMap['params']['id'];
 
-      this.lessonService.getLessons(this.moduleId).subscribe((data: LessonId[]) => {
+      this.lessonService.getLessons(this.moduleId).subscribe((data: Lesson[]) => {
         this.lessons = data;
       });
 
     });
   }
 
-  onReadMoreClick(lesson: LessonId) {
+  onReadMoreClick(lesson: Lesson) {
     this.router.navigate(['lesson', lesson.id]);
   }
 
@@ -63,7 +63,7 @@ export class PageModuleComponent implements OnInit {
     }
   }
 
-  nextLessonOrder(lessons: LessonId[]): number {
+  nextLessonOrder(lessons: Lesson[]): number {
 
     let nextOrder = 0;
 
@@ -89,7 +89,7 @@ export class PageModuleComponent implements OnInit {
 
     const nextOrder = (this.lessons) ? this.nextLessonOrder(this.lessons) : 0;
 
-    const newLesson: LessonId = {
+    const newLesson: Lesson = {
       id: null, title: '',  subtitle: '',
       order: nextOrder, moduleId: this.moduleId};
 
@@ -101,7 +101,7 @@ export class PageModuleComponent implements OnInit {
         (data) => {
           console.log('[newLesson] from dlg: ', data);
           if (data) {
-            this.lessonService.saveLesson(data as LessonId)
+            this.lessonService.saveLesson(data as Lesson)
             .then(() => {
                 this.messageService.add(
                   {severity: 'success', summary: 'Module Saved'}
@@ -113,7 +113,7 @@ export class PageModuleComponent implements OnInit {
     );
   }
 
-  onEditLesson(lesson: LessonId) {
+  onEditLesson(lesson: Lesson) {
     console.log('[editLesson]', lesson);
 
     const dialogConfig = new MatDialogConfig();
@@ -130,7 +130,7 @@ export class PageModuleComponent implements OnInit {
         (data) => {
           console.log('Dialog output:', data);
           if (data) {
-            this.lessonService.saveLesson(data as LessonId)
+            this.lessonService.saveLesson(data as Lesson)
             .then(() => {
                 this.messageService.add({severity: 'success', summary: 'Module Saved'});
               });
@@ -142,7 +142,7 @@ export class PageModuleComponent implements OnInit {
     this.onLessonEvent ({type: 'NEW', lesson: null} as LessonEvent);
   }
 
-  onDeleteLesson (lesson: LessonId) {
+  onDeleteLesson (lesson: Lesson) {
     console.log (`[onDeleteLesson]`, lesson);
     this.lessonService.deleteLesson(lesson)
       .then(() => {
@@ -150,10 +150,10 @@ export class PageModuleComponent implements OnInit {
       });
   }
 
-  onDemoteLesson(lesson: LessonId) {
+  onDemoteLesson(lesson: Lesson) {
     console.log(`[onDemoteLesson]`, lesson);
 
-    const higherLessons: LessonId[] = this.lessons.filter((l) => l.order > lesson.order);
+    const higherLessons: Lesson[] = this.lessons.filter((l) => l.order > lesson.order);
 
     const swapLesson = higherLessons[0];
 
