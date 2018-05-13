@@ -4,7 +4,8 @@ export class DbConfig {
     public static LOS = 'los';
     public static LESSON_PROGRESS = 'loProgress';
     public static LO_PROGRESS = 'loProgress';
-    public static SECTIONS = 'sections';
+    public static SECTIONS = 'lesson-sections';
+    public static SECTION_PAYLOAD = 'sectionPayloads';
 
     public static USER_PROFILES = 'userProfiles';
 

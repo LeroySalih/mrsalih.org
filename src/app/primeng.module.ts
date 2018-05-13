@@ -10,15 +10,16 @@ import {DialogModule} from 'primeng/dialog';
 import {SplitButtonModule} from 'primeng/splitbutton';
 import {CheckboxModule} from 'primeng/checkbox';
 import {CardModule} from 'primeng/card';
+import {DragDropModule} from 'primeng/dragdrop';
 
 @NgModule({
 
     imports: [RatingModule, ButtonModule, TriStateCheckboxModule, GrowlModule,
       InplaceModule, EditorModule, DialogModule, SplitButtonModule, CheckboxModule,
-      CardModule
+      CardModule, DragDropModule
     ],
     exports: [RatingModule, ButtonModule, TriStateCheckboxModule, GrowlModule,
       InplaceModule, EditorModule, DialogModule, SplitButtonModule, CheckboxModule,
-    CardModule],
+    CardModule, DragDropModule],
   })
   export class PrimeNGModule { }

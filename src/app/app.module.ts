@@ -43,7 +43,10 @@ import { ModuleDialogComponent } from './dialogs/module-dialog/module-dialog.com
 import { LessonDialogComponent } from './dialogs/lesson-dialog/lesson-dialog.component';
 import { CpLessonSummaryComponent } from './cp-lesson-summary/cp-lesson-summary.component';
 import { LODialogComponent } from './dialogs/lo-dialog/lo-dialog.component';
+import { CpSectionComponent } from './cp-section/cp-section.component';
+import { SectionPayloadService } from './services/section-payload';
 
+import { NgDragDropModule } from 'ng-drag-drop';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: '/home', pathMatch: 'full'},
@@ -71,6 +74,7 @@ const appRoutes: Routes = [
     LessonDialogComponent,
     CpLessonSummaryComponent,
     LODialogComponent,
+    CpSectionComponent,
   ],
   imports: [
     BrowserModule,
@@ -83,6 +87,7 @@ const appRoutes: Routes = [
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     AngularFireAuthModule,
+    NgDragDropModule.forRoot(),
     RouterModule.forRoot(
       appRoutes,
       { enableTracing: false } // <-- debugging purposes only
@@ -97,7 +102,8 @@ const appRoutes: Routes = [
     LessonSectionService,
     AngularFireAuth,
     LessonProgressService,
-    SectionNotesService, MessageService,
+    SectionPayloadService,
+    MessageService,
 
   ],
   bootstrap: [AppComponent],

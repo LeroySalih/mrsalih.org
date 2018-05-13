@@ -22,12 +22,13 @@ import { UserProfile } from '../models/user-profile';
 import { LessonProgressService } from '../services/lesson-progress.service';
 import { LessonProgress } from '../models/lesson-progress';
 import { LOProgress } from '../models/lo-progress';
-import { SectionNotes, VideoNote } from '../models/section-notes';
-import { SectionNotesService } from '../services/section-notes.service';
+import { SectionPayload } from '../models/section-payload';
+import { SectionPayloadService } from '../services/section-payload';
 
 import { LODialogComponent} from '../dialogs/lo-dialog/lo-dialog.component';
 import { MessageService } from 'primeng/components/common/messageservice';
 import { LOEvent } from '../cp-learning-objective/cp-learning-objective.component';
+import { MenuItem} from 'primeng/api';
 
 
 export interface Customer {
@@ -54,7 +55,9 @@ export class PageLessonComponent implements OnInit {
   lessonProgresses: any = {};
   los: LO[];
   loProgress: {[id: string]: LOProgress} = {};  // { [id: string]:  string}  = {};
-  sectionNotes: { [ id: string]: VideoNote[]} = {};
+  sectionPayloads: { [ id: string]: SectionPayload} = {};
+  items: MenuItem[];
+  // sectionPayloadService: any;
 
   public myForm: FormGroup; // our form model
 
@@ -65,9 +68,10 @@ export class PageLessonComponent implements OnInit {
               private lessonSectionService: LessonSectionService,
               private userService: UserService,
               private lessonProgressService: LessonProgressService,
-              private sectionNotesService: SectionNotesService,
+              private sectionPayloadService: SectionPayloadService,
               private matDialog: MatDialog,
               private messageService: MessageService,
+
               private _fb: FormBuilder,
             ) {
 
@@ -86,6 +90,8 @@ export class PageLessonComponent implements OnInit {
       (page, user) =>  ({page, user})
     );
 
+
+
     values$.subscribe(data => {
       if (!data.page || !data.user) {return; }
 
@@ -100,8 +106,8 @@ export class PageLessonComponent implements OnInit {
           this.lessonProgressService.getLessonProgressForUser(this.userProfile.authenticationId, this.lessonId),
           this.loService.getLearningObjectives(this.lessonId),
           this.loProgressService.getLOProgressForUser(this.userProfile.authenticationId, this.lessonId),
-          this.sectionNotesService.getSectionNotesForLesson(this.userProfile.authenticationId, this.lessonId),
-          (lesson, sections, progress, los, loProgress, sectionNotes) => ({lesson, sections, progress, los, loProgress, sectionNotes})
+          this.sectionPayloadService.getSectionPayloadsForLesson(this.lessonId, this.userProfile.authenticationId),
+          (lesson, sections, progress, los, loProgress, sectionPayloads) => ({lesson, sections, progress, los, loProgress, sectionPayloads})
         ).subscribe((lessonData) => {
             console.log(lessonData);
 
@@ -121,14 +127,18 @@ export class PageLessonComponent implements OnInit {
            });
 
             // build section comments>
-            lessonData.sectionNotes.forEach((sectionNote: SectionNotes) => {
-              this.sectionNotes[sectionNote.sectionId] = sectionNote.notes;
+            lessonData.sectionPayloads.forEach((sectionPayload: SectionPayload) => {
+              this.sectionPayloads[sectionPayload.sectionId] = sectionPayload;
             });
 
         });
 
     });
 
+  }
+
+  getSectionPayload (section: LessonSection) {
+    return this.sectionPayloads[section.id];
   }
 
   onLOStatusChange(event) {
@@ -158,6 +168,8 @@ export class PageLessonComponent implements OnInit {
 
     return (los) ? nextOrder + 1 : 0;
   }
+
+
   onNewLO(lo: LO) {
     console.log(`[onLOEvent]`, event);
 
@@ -234,42 +246,65 @@ export class PageLessonComponent implements OnInit {
   }
 
   saveSectionNote(event) {
-    console.log('Section Note Event Received');
-    console.log(event);
-    const sectionNotes: SectionNotes = {
-        userId: this.userProfile.authenticationId,
-        lessonId: this.lessonId,
-        ...event};
-
-    this.sectionNotesService.setSectionNotes(sectionNotes)
-      .then(() => { console.log ('[saveSectionNotes] Comments Updated'); })
-      .catch((err) => {console.error('[saveSectionNotes] ', err.message); });
 
   }
 
-  onCompletedChange(section, chk) {
 
-    const lessonProgress: LessonProgress = {
+  onSectionCompletedChange(section: LessonSection, completed: boolean) {
+    console.log(`[onSectionCompletedChange]`, section, completed);
+
+    const sectionComplete: SectionPayload = {
+        id: `${section.lessonId}-${section.id}-${this.userProfile.authenticationId}`,
         userId: this.userProfile.authenticationId,
-        classId: this.userProfile.className,
-        completed: chk['checked'],
+        completed: completed,
         lessonId: this.lessonId,
         sectionId: section['id'],
         };
 
-    this.lessonProgressService.setLessonProgress(lessonProgress)
-          .then(() => {console.log(`onCompletedChange ${section.id} updated to`, chk.checked); } )
+    this.sectionPayloadService.saveSectionPayload(sectionComplete)
+          .then(() => {console.log(`onCompletedChange ${section.id} updated to`, completed); } )
           .catch((error) => { console.log('onCompletedChange error: ', error.message); });
 
   }
 
-  checkSectionComplete(sectionId) {
-    return this.lessonProgresses[sectionId];
+  onSectionEvent(event) {
+    console.log(`[onSectionEvent]`, event);
+
+    switch (event.type) {
+      case 'COMPLETE_STATUS' : return this.onSectionCompletedChange(event.section, event.payload);
+      case 'SWAP_POSITION' : return this.onSectionSwapPosition (event.payload.from, event.payload.to);
+    }
   }
 
-  getNotesForSection (sectionId): VideoNote[] {
-    // console.log(this.sectionNotes[sectionId]);
-    return this.sectionNotes[sectionId];
-  }
+  onSectionSwapPosition(from, to) {
+    console.log('[onSectionSwapPosition]');
+
+      if (from > to) {
+        this.sections.forEach((s) => {
+          if ((s.order - 1) >= to) {
+            s.order = s.order + 1;
+          }
+        });
+        this.sections[from].order = to + 1;
+      } else {
+
+        this.sections.forEach((s) => {
+          if ((s.order - 1 ) >= to) {
+            s.order = s.order - 1;
+          }
+        });
+
+        this.sections[from].order = to + 1;
+      }
+
+      this.lessonSectionService.bulkUpdate(this.sections)
+        .then(() => {
+          this.messageService.add({severity: 'success', summary: 'Sections reordered'});
+        })
+        .catch((err) => {
+          console.error(err.message);
+        });
+    }
+
 
 }

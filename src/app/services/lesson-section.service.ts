@@ -3,7 +3,8 @@ import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument 
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-import { LessonSection, LessonSectionId } from '../models/lesson-section';
+import { LessonSection } from '../models/lesson-section';
+import { DbConfig } from '../db.config';
 
 @Injectable()
 export class LessonSectionService {
@@ -15,16 +16,24 @@ export class LessonSectionService {
   getLessonSections(lessonId: string): Observable<LessonSection[]> {
 
     const collection = this.afs.collection<LessonSection>
-          ('lesson-sections', ref => ref.where('lessonId', '==', lessonId).orderBy('order', 'asc'));
+          (DbConfig.SECTIONS, ref => ref.where('lessonId', '==', lessonId).orderBy('order', 'asc'));
 
     return collection.valueChanges();
 
   }
 
-  getLessonSection(lessonId: string): Observable<LessonSection> {
+  bulkUpdate (sections: LessonSection[]): Promise<void> {
 
-    const document: AngularFirestoreDocument<LessonSectionId> = this.afs.doc(`lessons/${lessonId}`);
-    return document.valueChanges();
+    console.log(`[bulkUpdate]`, sections);
+
+    const batch = this.afs.firestore.batch();
+
+    sections.forEach((s) => {
+        const docRef = this.afs.firestore.doc(`${DbConfig.SECTIONS}/${s.id}`);
+        batch.set(docRef, s);
+    });
+
+    return batch.commit();
 
   }
 

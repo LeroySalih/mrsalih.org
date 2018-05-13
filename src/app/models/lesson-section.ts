@@ -5,8 +5,7 @@ export class LessonSection {
     content: string;
     type: string;
     options: any;
-}
-
-export class LessonSectionId extends LessonSection {
     id: string;
 }
+
+

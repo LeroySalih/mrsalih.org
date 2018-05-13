@@ -8,46 +8,24 @@
                   <app-cp-learning-objectives 
                             [los]="los"
                             [loProgress]="loProgress"
+                        
                             (statusChange)="onLOStatusChange($event)"
                             (loEvent) = "onLOEvent($event)"
                             ></app-cp-learning-objectives>
               </section>
               
-              <section *ngFor="let section of sections">
-                    <hr>
-                  <mat-card>
-                      <mat-card-title>{{section.title}}</mat-card-title>
-                      
-                      <mat-card-content>
-
-                        <app-cp-embed-video 
-                                *ngIf="section.type == 'you-tube-video'"
-                                [myVideoId]="section.options.videoId">
-                        </app-cp-embed-video>
-
-                        <app-cp-embed-local-video 
-                                *ngIf="section.type == 'video'"
-                                [myVideoId]="section.options.videoId">
-                        </app-cp-embed-local-video>
-                          
-                        <app-cp-section-notes 
-                                *ngIf="section.options.showComments == true"
-                                [sectionId]="section.id"
-                                [notes]="getNotesForSection(section.id)"
-                                (SectionNoteChange)="saveSectionNote($event)">
-                        </app-cp-section-notes>
+              <section *ngFor="let section of sections; let i = index;">
                         
-                        <app-cp-embed-text-content 
-                                *ngIf="section.type == 'text'"
-                                [section]="section">
-                        </app-cp-embed-text-content>
-                        
-                       </mat-card-content>
-                      <mat-card-actions>
-                            <mat-checkbox #chk (change)="onCompletedChange(section, chk);" [checked]="checkSectionComplete(section.id)">Completed</mat-checkbox>
-                      </mat-card-actions>
-                </mat-card>
+                        <app-cp-section  
+                        [section]="section"
+                        [payload]="getSectionPayload(section)"
+                        [index]="i"
+                        (sectionEvent)="onSectionEvent($event)"
+                        >
+                
+                        </app-cp-section>
               </section>
+              
 
 </section>
 
