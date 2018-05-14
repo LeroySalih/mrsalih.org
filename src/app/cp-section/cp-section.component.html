@@ -1,7 +1,17 @@
 <section draggable>
-  <div droppable (onDrop)="onDrop($event)" style="height: 30px; background-color:blue;"></div>
-  <hr>
-  <mat-card draggable [dragData]="index" (onDragStart)="onDragStart($event)" (onDragEnd)="onDragEnd($event)">
+  <div droppable 
+    (onDrop)="onDrop($event)" 
+    class="dropTarget" 
+    [@highlightState]="getHighlightDragArea()"
+    >
+    <div class="dropTargetInner"></div>
+    
+  </div>
+  <mat-card draggable 
+      [dragData]="index" 
+      (onDragStart)="onDragStart($event)" 
+      (onDragEnd)="onDragEnd($event)">
+      
       <mat-card-title>{{section.title}}</mat-card-title>
       
       <mat-card-content>
@@ -31,7 +41,7 @@
        </mat-card-content>
       <mat-card-actions style="display: flex; flex-direction: row">
             <mat-checkbox style="flex:1" #chk (change)="onCompleteChange(chk)" [checked]="getCompleted()">Completed</mat-checkbox>
-            <p-splitButton style="" label="Edit"></p-splitButton>
+            <p-splitButton style="" label="Edit" [model]="items"></p-splitButton>
       </mat-card-actions>
 </mat-card>
 </section>

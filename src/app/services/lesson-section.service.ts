@@ -6,6 +6,8 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { LessonSection } from '../models/lesson-section';
 import { DbConfig } from '../db.config';
 
+import { v4 as uuid } from 'uuid';
+
 @Injectable()
 export class LessonSectionService {
 
@@ -20,6 +22,21 @@ export class LessonSectionService {
 
     return collection.valueChanges();
 
+  }
+
+  saveLessonSection (section: LessonSection): Promise<void> {
+
+    console.log(`[saveLessonSection]`, section);
+
+    if (section.id === null || section.id === undefined) {
+      section.id = uuid();
+    }
+
+    return this.afs.doc(`${DbConfig.SECTIONS}/${section.id}`).set(section);
+  }
+
+  deleteLessonSection(section: LessonSection) {
+    return this.afs.doc(`${DbConfig.SECTIONS}/${section.id}`).delete();
   }
 
   bulkUpdate (sections: LessonSection[]): Promise<void> {

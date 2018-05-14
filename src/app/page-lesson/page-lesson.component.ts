@@ -57,6 +57,8 @@ export class PageLessonComponent implements OnInit {
   loProgress: {[id: string]: LOProgress} = {};  // { [id: string]:  string}  = {};
   sectionPayloads: { [ id: string]: SectionPayload} = {};
   items: MenuItem[];
+  isDragging: boolean;
+
   // sectionPayloadService: any;
 
   public myForm: FormGroup; // our form model
@@ -76,7 +78,7 @@ export class PageLessonComponent implements OnInit {
             ) {
 
              // this.learningObjectiveFeedback = {'PsfYfc3ag8oGkfOS8hQn': 'Not Yet', 'gG18CK2wQ14STjnyBX9B' : 'Got It'};
-
+            this.isDragging = false;
              }
 
   ngOnInit() {
@@ -273,6 +275,10 @@ export class PageLessonComponent implements OnInit {
     switch (event.type) {
       case 'COMPLETE_STATUS' : return this.onSectionCompletedChange(event.section, event.payload);
       case 'SWAP_POSITION' : return this.onSectionSwapPosition (event.payload.from, event.payload.to);
+      case 'DELETE' : return this.onSectionDelete(event.section);
+      case 'DRAG_START': this.isDragging = true; break;
+      case 'DRAG_END' :  this.isDragging = false; break;
+      case 'NEW' : return this.onSectionNew();
     }
   }
 
@@ -304,6 +310,36 @@ export class PageLessonComponent implements OnInit {
         .catch((err) => {
           console.error(err.message);
         });
+    }
+
+    onSectionDelete (section: LessonSection) {
+      console.log(`[onSectionDelete]`, section);
+
+      this.lessonSectionService.deleteLessonSection(section)
+        .then(() => {
+          this.messageService.add({severity: 'success', summary: 'Section Deleted'});
+        });
+    }
+
+    onSectionNew() {
+      console.log(`[onSectionNew]`);
+
+      let nextOrder = 0;
+
+      this.sections.forEach((s) => {
+        nextOrder = Math.max(nextOrder, s.order);
+      });
+
+      this.lessonSectionService.saveLessonSection({
+            title: 'New Section',
+            type: 'text',
+            order: nextOrder + 1,
+            options : {showComments: false},
+            lessonId: this.lessonId,
+            content: '<p>New Section</p>'} as LessonSection)
+          .then(() => {
+            this.messageService.add({severity: 'success', summary: 'Section Created'});
+          });
     }
 
 

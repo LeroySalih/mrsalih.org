@@ -13,13 +13,20 @@
                             (loEvent) = "onLOEvent($event)"
                             ></app-cp-learning-objectives>
               </section>
-              
+              <section>
+                      <div style="display: flex; flex-direction: row">
+                                <h2 class="mat-title" style="flex: 1">Lesson Sections:</h2>
+                                <p-button label="Add" (click)="onSectionEvent({type:'NEW'})"></p-button>
+                      </div>
+                      
+              </section>
               <section *ngFor="let section of sections; let i = index;">
                         
                         <app-cp-section  
                         [section]="section"
                         [payload]="getSectionPayload(section)"
                         [index]="i"
+                        [highlightDragArea]="isDragging"
                         (sectionEvent)="onSectionEvent($event)"
                         >
                 
