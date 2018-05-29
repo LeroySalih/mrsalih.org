@@ -19,7 +19,12 @@
           
     </div>
     
-    <app-cp-lesson-summary *ngFor="let lesson of lessons;" [lesson]="lesson" (lessonEvent)="onLessonEvent($event)">
+    <app-cp-lesson-summary 
+        *ngFor="let lesson of lessons;let i = index;" 
+        [index]="i"
+        [lesson]="lesson" 
+        [highlightDragArea]="isDragging"
+        (lessonEvent)="onLessonEvent($event)">
 
     </app-cp-lesson-summary>
     

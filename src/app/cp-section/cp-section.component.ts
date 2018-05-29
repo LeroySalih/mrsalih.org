@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { LessonSection } from '../models/lesson-section';
 import { Lesson } from '../models/lesson';
 import { SectionPayload } from '../models/section-payload';
+import { QuestionEvent } from '../cp-question/cp-question.component';
 
 import { MenuItem } from 'primeng/api';
 import {
@@ -38,6 +39,9 @@ export class CpSectionComponent implements OnInit {
   @Output()
   sectionEvent: EventEmitter<SectionEvent>;
 
+  @Output()
+  questionEvent: EventEmitter<QuestionEvent>;
+
   @Input()
   index: number;
 
@@ -48,6 +52,8 @@ export class CpSectionComponent implements OnInit {
 
   constructor() {
     this.sectionEvent = new EventEmitter<SectionEvent>();
+    this.questionEvent = new EventEmitter<QuestionEvent>();
+
     this.items = [
       {label: 'Edit', icon: 'fa-edit', command: () => {  this.OnEditLessonClick(); }},
       {label: 'Delete', icon: 'fa-trash', command: () => {  this.OnDeleteLessonSectionClick(); }},
@@ -87,6 +93,7 @@ export class CpSectionComponent implements OnInit {
 
   OnEditLessonClick() {
     console.log(`[OnEditLessonClick]`);
+    this.sectionEvent.emit({type: 'EDIT', section: this.section} as SectionEvent);
   }
 
   OnDeleteLessonSectionClick() {
@@ -96,6 +103,11 @@ export class CpSectionComponent implements OnInit {
 
   getHighlightDragArea() {
     return (this.highlightDragArea) ? 'active' : 'inactive';
+  }
+
+  onQuestonEvent(event: QuestionEvent) {
+    event.sectionId  = this.section.id;
+    this.questionEvent.emit(event);
   }
 
 }

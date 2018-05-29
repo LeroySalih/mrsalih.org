@@ -3,35 +3,55 @@
         <h2 class="mat-subheading-1">{{lesson.subtitle}}</h2>
 </section>
 <section class="pageContainer" *ngIf="lesson">
-        
-              <section>
-                  <app-cp-learning-objectives 
-                            [los]="los"
-                            [loProgress]="loProgress"
-                        
-                            (statusChange)="onLOStatusChange($event)"
-                            (loEvent) = "onLOEvent($event)"
-                            ></app-cp-learning-objectives>
-              </section>
-              <section>
-                      <div style="display: flex; flex-direction: row">
-                                <h2 class="mat-title" style="flex: 1">Lesson Sections:</h2>
-                                <p-button label="Add" (click)="onSectionEvent({type:'NEW'})"></p-button>
-                      </div>
-                      
-              </section>
-              <section *ngFor="let section of sections; let i = index;">
-                        
-                        <app-cp-section  
-                        [section]="section"
-                        [payload]="getSectionPayload(section)"
-                        [index]="i"
-                        [highlightDragArea]="isDragging"
-                        (sectionEvent)="onSectionEvent($event)"
-                        >
-                
-                        </app-cp-section>
-              </section>
+        <div class="lesson">
+                        <section>
+                                        <app-cp-learning-objectives 
+                                                  [los]="los"
+                                                  [loProgress]="loProgress"
+                                              
+                                                  (statusChange)="onLOStatusChange($event)"
+                                                  (loEvent) = "onLOEvent($event)"
+                                                  ></app-cp-learning-objectives>
+                                    </section>
+                                    <section>
+                                            <div style="display: flex; flex-direction: row">
+                                                      <h2 class="mat-title" style="flex: 1">Lesson Sections:</h2>
+                                                      <p-button label="Add" (click)="onSectionEvent({type:'NEW'})"></p-button>
+                                            </div>
+                                            
+                                    </section>
+                                    <section *ngFor="let section of sections; let i = index;">
+                                              
+                                              <app-cp-section  
+                                              [section]="section"
+                                              [payload]="getSectionPayload(section)"
+                                              [index]="i"
+                                              [highlightDragArea]="isDragging"
+                                              (sectionEvent)="onSectionEvent($event)"
+                                              (questionEvent)="onQuestionEvent($event)"
+                                              >
+                                      
+                                              </app-cp-section>
+                                    </section>
+        </div>
+        <div class="quizArea">
+                <mat-card class="quiz" *ngIf="!questions">
+                        <section class="actions">
+                                <button type="button" style="width:100%; margin: 3px;" pButton label="Take Quiz" (click)="createQuiz()"></button>
+                        </section>
+                </mat-card>
+                <section class="progressBar" *ngIf="questions">
+                        <div class="progressItem success">&nbsp;</div>
+                        <div class="progressItem success">&nbsp;</div>
+                        <div class="progressItem error">&nbsp;</div>
+                        <div class="progressItem error">&nbsp;</div>
+                        <div class="progressItem current">&nbsp;</div>                   
+                </section>
+                <app-cp-question *ngIf="questions" 
+                        [question]="questions.questions[currentQuestion]">
+                </app-cp-question>
+        </div>
+              
               
 
 </section>

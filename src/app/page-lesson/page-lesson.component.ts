@@ -29,7 +29,13 @@ import { LODialogComponent} from '../dialogs/lo-dialog/lo-dialog.component';
 import { MessageService } from 'primeng/components/common/messageservice';
 import { LOEvent } from '../cp-learning-objective/cp-learning-objective.component';
 import { MenuItem} from 'primeng/api';
+import { SectionEditDialogComponent } from '../dialogs/section-edit-dialog/section-edit-dialog.component';
+import { QuestionService } from '../services/question.service';
 
+import {Quiz} from '../services/question.service';
+import { Question } from '../models/question';
+import { Answer } from '../models/answer';
+import { QuestionFactory } from '../models/question-factory';
 
 export interface Customer {
   name: string; // required field with minimum 5 characters
@@ -58,6 +64,8 @@ export class PageLessonComponent implements OnInit {
   sectionPayloads: { [ id: string]: SectionPayload} = {};
   items: MenuItem[];
   isDragging: boolean;
+  questions: Question[];
+  currentQuestion = 0;
 
   // sectionPayloadService: any;
 
@@ -73,7 +81,7 @@ export class PageLessonComponent implements OnInit {
               private sectionPayloadService: SectionPayloadService,
               private matDialog: MatDialog,
               private messageService: MessageService,
-
+              private questionService: QuestionService,
               private _fb: FormBuilder,
             ) {
 
@@ -109,7 +117,9 @@ export class PageLessonComponent implements OnInit {
           this.loService.getLearningObjectives(this.lessonId),
           this.loProgressService.getLOProgressForUser(this.userProfile.authenticationId, this.lessonId),
           this.sectionPayloadService.getSectionPayloadsForLesson(this.lessonId, this.userProfile.authenticationId),
-          (lesson, sections, progress, los, loProgress, sectionPayloads) => ({lesson, sections, progress, los, loProgress, sectionPayloads})
+          this.questionService.getQuestionsForUser(this.lessonId, this.userProfile.authenticationId),
+           (lesson, sections, progress, los, loProgress, sectionPayloads, questions) =>
+          ({lesson, sections, progress, los, loProgress, sectionPayloads, questions})
         ).subscribe((lessonData) => {
             console.log(lessonData);
 
@@ -133,6 +143,7 @@ export class PageLessonComponent implements OnInit {
               this.sectionPayloads[sectionPayload.sectionId] = sectionPayload;
             });
 
+            this.questions = lessonData.questions;
         });
 
     });
@@ -279,8 +290,27 @@ export class PageLessonComponent implements OnInit {
       case 'DRAG_START': this.isDragging = true; break;
       case 'DRAG_END' :  this.isDragging = false; break;
       case 'NEW' : return this.onSectionNew();
+      case 'EDIT' : return this.onSectionEdit(event.section);
     }
   }
+
+  onQuestionEvent(event) {
+    switch (event.type) {
+      case 'CORRECT' : return this.correctQuestion(event.payload);
+      case 'INCORRECT' : return this.incorrectQuestion();
+
+    }
+  }
+
+  correctQuestion(answer: Answer) {
+    answer.userId = this.userProfile.authenticationId;
+    this.messageService.add({severity: 'SUCCESS', summary: 'Correct!'});
+  }
+
+  incorrectQuestion() {
+    this.messageService.add({severity: 'DANGER', summary: 'InCorrect!'});
+  }
+
 
   onSectionSwapPosition(from, to) {
     console.log('[onSectionSwapPosition]');
@@ -310,6 +340,31 @@ export class PageLessonComponent implements OnInit {
         .catch((err) => {
           console.error(err.message);
         });
+    }
+
+    onSectionEdit (section: LessonSection) {
+
+      console.log(`[onSectionEdit]`);
+
+      const dialogConfig = new MatDialogConfig();
+      dialogConfig.disableClose = false;
+      dialogConfig.autoFocus = true;
+
+      dialogConfig.data = section;
+      // dialogConfig.data.order = this.getNextOrder(this.los);
+
+      const dialogRef = this.matDialog.open(SectionEditDialogComponent, dialogConfig);
+
+      dialogRef.afterClosed().subscribe(
+        (dlgSection) => {
+          console.log('[edit Section] from dlg: ', section );
+            if (dlgSection) {
+              this.lessonSectionService.saveLessonSection(dlgSection)
+                  .then(() => {
+                    this.messageService.add({severity: 'success', summary: 'Lesson Section Saved.'});
+                  });
+                }
+            });
     }
 
     onSectionDelete (section: LessonSection) {
@@ -342,5 +397,15 @@ export class PageLessonComponent implements OnInit {
           });
     }
 
-
+    createQuiz() {
+      console.log(`createQuiz`);
+      this.questionService.createQuizforUser(
+        this.lessonId,
+        this.userProfile.authenticationId,
+        QuestionFactory.TIME_CONVERT_HRS_MINS_TO_MINS)
+        .then(() => { this.messageService.add({severity: 'success', summary: 'Quiz Created'}); })
+        .catch((err) => {
+          this.messageService.add({severity: 'danger', summary: err.message});
+        });
+    }
 }

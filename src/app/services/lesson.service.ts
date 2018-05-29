@@ -44,6 +44,20 @@ export class LessonService {
     return this.afs.doc(`${DbConfig.LESSONS}/${lesson.id}`).set(lesson);
   }
 
+  bulkUpdate(lessons: Lesson[]) {
+
+    console.log(`[bulkUpdate]`, lessons);
+    const batch = this.afs.firestore.batch();
+
+    lessons.forEach((l) => {
+        const docRef = this.afs.firestore.doc(`${DbConfig.LESSONS}/${l.id}`);
+        batch.set(docRef, l);
+    });
+
+    return batch.commit();
+  }
+
+
   deleteLesson (lesson: Lesson): Promise<void> {
     return this.afs.doc(`${DbConfig.LESSONS}/${lesson.id}`).delete();
   }

@@ -25,6 +25,8 @@ export class PageModuleComponent implements OnInit {
 
   items: MenuItem[];
 
+  isDragging = false;
+
   constructor(
       private route: ActivatedRoute,
       private router: Router,
@@ -60,6 +62,10 @@ export class PageModuleComponent implements OnInit {
       case 'EDIT' : this.onEditLesson(lessonEvent.lesson); break;
       case 'DELETE' : this.onDeleteLesson(lessonEvent.lesson); break;
       case 'DEMOTE' : this.onDemoteLesson(lessonEvent.lesson); break;
+      case 'SWAP_POSITION' : return this.onLessonSwapPosition (lessonEvent.payload.from, lessonEvent.payload.to);
+      case 'DRAG_START': this.isDragging = true; break;
+      case 'DRAG_END' :  this.isDragging = false; break;
+      default : return console.error('[onLessonEvent] UNKNOWN EVENT');
     }
   }
 
@@ -163,6 +169,36 @@ export class PageModuleComponent implements OnInit {
         this.messageService.add({severity: 'success', summary: 'Lesson Demoted'});
       });
     }
+  }
+
+  onLessonSwapPosition(from: number, to: number) {
+    console.log('[onLessonSwapPosition]');
+
+    if (from > to) {
+      this.lessons.forEach((s) => {
+        if ((s.order - 1) >= to) {
+          s.order = s.order + 1;
+        }
+      });
+      this.lessons[from].order = to + 1;
+    } else {
+
+      this.lessons.forEach((s) => {
+        if ((s.order - 1 ) >= to) {
+          s.order = s.order - 1;
+        }
+      });
+
+      this.lessons[from].order = to + 1;
+    }
+
+    this.lessonService.bulkUpdate(this.lessons)
+      .then(() => {
+        this.messageService.add({severity: 'success', summary: 'Sections reordered'});
+      })
+      .catch((err) => {
+        console.error(err.message);
+      });
   }
 
 }

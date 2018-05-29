@@ -1,0 +1,22 @@
+<mat-card class="quiz" *ngIf="question">
+    <mat-card-content>
+          
+            <section class="question">
+                    
+                    <ng-katex [equation]="question.questionLabel" style="font-size:x-small"></ng-katex>
+            </section>
+
+            <section class="answers">
+                    <div class="answer2"><p-radioButton name="answers" value="1" ></p-radioButton><ng-katex [equation]="'445'" style="font-size:x-small"></ng-katex></div>
+                    <div class="answer2"><p-radioButton name="answers" value="2" ></p-radioButton><ng-katex [equation]="'345'"  style="font-size:x-small"></ng-katex></div>
+                    <div class="answer2"><p-radioButton name="answers" value="3" ></p-radioButton><ng-katex [equation]="'355'" style="font-size:x-small"></ng-katex></div>
+                    <div class="answer2"><p-radioButton name="answers" value="4" ></p-radioButton><ng-katex [equation]="'447'"  style="font-size:x-small"></ng-katex></div>
+            </section>
+
+            <section class="actions">
+                    <button type="button" style="width:100%; margin: 3px;" pButton label="Submit"></button>
+            </section>
+            
+    </mat-card-content> 
+    </mat-card>
+

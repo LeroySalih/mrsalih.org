@@ -47,13 +47,20 @@ import { CpSectionComponent } from './cp-section/cp-section.component';
 import { SectionPayloadService } from './services/section-payload';
 
 import { NgDragDropModule } from 'ng-drag-drop';
+// import { CpSectionEditComponent } from './cp-section-edit/cp-section-edit.component';
+import { SectionEditDialogComponent } from './dialogs/section-edit-dialog/section-edit-dialog.component';
+import { CpQuestionComponent } from './cp-question/cp-question.component';
+import { KatexModule } from 'ng-katex';
+import { QuestionService } from './services/question.service';
+import { PageQuizComponent } from './page-quiz/page-quiz.component';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: '/home', pathMatch: 'full'},
   {path: 'home', component: PageHomeComponent},
   {path: 'login', component: PageLoginComponent},
   {path: 'module/:id', component: PageModuleComponent},
-  {path: 'lesson/:id', component: PageLessonComponent}
+  {path: 'lesson/:id', component: PageLessonComponent},
+  {path: 'quiz/:id', component: PageQuizComponent}
 ];
 
 @NgModule({
@@ -63,6 +70,7 @@ const appRoutes: Routes = [
     PageModuleComponent,
     PageLessonComponent,
     PageLoginComponent,
+    PageQuizComponent,
     CpLearningObjectiveComponent,
     CpSectionNotesComponent,
     CpEmbedVideoComponent,
@@ -75,6 +83,10 @@ const appRoutes: Routes = [
     CpLessonSummaryComponent,
     LODialogComponent,
     CpSectionComponent,
+  //  CpSectionEditComponent,
+    SectionEditDialogComponent,
+  CpQuestionComponent,
+  PageQuizComponent,
   ],
   imports: [
     BrowserModule,
@@ -87,6 +99,7 @@ const appRoutes: Routes = [
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     AngularFireAuthModule,
+    KatexModule,
     NgDragDropModule.forRoot(),
     RouterModule.forRoot(
       appRoutes,
@@ -104,9 +117,12 @@ const appRoutes: Routes = [
     LessonProgressService,
     SectionPayloadService,
     MessageService,
+    QuestionService,
 
   ],
   bootstrap: [AppComponent],
-  entryComponents: [AppComponent, ModuleDialogComponent, LessonDialogComponent, LODialogComponent]
+  entryComponents: [AppComponent, ModuleDialogComponent, LessonDialogComponent, LODialogComponent,
+    SectionEditDialogComponent
+  ]
 })
 export class AppModule { }

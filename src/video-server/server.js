@@ -1,14 +1,18 @@
 const express = require('express')
 const app = express()
 const fs = require('fs')
+const path = require('path')
 
 app.get('/', (req, res) => res.send('Hello World!'))
 
 app.use(express.static('assets'))
 
 app.get('/video/:id', function(req, res) {
-    const path = `assets/${req.params['id']}.mp4`
-    const stat = fs.statSync(path)
+    const videoId = `./assets/${req.params['id']}.mp4`
+    const videoPath = path.join(__dirname, videoId);
+    console.log('loading Video: ', videoPath);
+
+    const stat = fs.statSync(videoPath);
     const fileSize = stat.size
     const range = req.headers.range
     if (range) {
@@ -18,7 +22,7 @@ app.get('/video/:id', function(req, res) {
         ? parseInt(parts[1], 10)
         : fileSize-1
       const chunksize = (end-start)+1
-      const file = fs.createReadStream(path, {start, end})
+      const file = fs.createReadStream(videoPath, {start, end})
       const head = {
         'Content-Range': `bytes ${start}-${end}/${fileSize}`,
         'Accept-Ranges': 'bytes',
@@ -33,7 +37,7 @@ app.get('/video/:id', function(req, res) {
         'Content-Type': 'video/mp4',
       }
       res.writeHead(200, head)
-      fs.createReadStream(path).pipe(res)
+      fs.createReadStream(videoPath).pipe(res)
     }
   });
 

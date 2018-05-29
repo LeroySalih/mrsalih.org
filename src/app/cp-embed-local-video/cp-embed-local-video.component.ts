@@ -1,5 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { DomSanitizer, SafeUrl} from '@angular/platform-browser';
+import { DbConfig } from '../db.config';
+
 
 @Component({
   selector: 'app-cp-embed-local-video',
@@ -8,23 +10,30 @@ import { DomSanitizer, SafeUrl} from '@angular/platform-browser';
 })
 export class CpEmbedLocalVideoComponent implements OnInit {
 
-  safeUrl: SafeUrl;
+  safeUrls: SafeUrl[];
 
   @Input()
   myVideoId: string;
 
   constructor(private sanitizer: DomSanitizer) {
    // console.log(this.myVideoId);
+
   }
 
 
   ngOnInit() {
-   //  console.log(this.myVideoId);
-    const url = `http://localhost:3000/video/${this.myVideoId}`;
-    this.safeUrl = this
-    .sanitizer
-    .bypassSecurityTrustResourceUrl(url);
 
-  }
+    console.log(`[ngOnInit]`, this.myVideoId);
+
+    if (this.myVideoId) {
+      this.safeUrls = this.myVideoId.split(';').map((v) => {
+        v = v.trim();
+
+        const url = `${DbConfig.VIDEO_URL_BASE}${v}`;
+
+        return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+      });
+    }
+    }
 
 }
