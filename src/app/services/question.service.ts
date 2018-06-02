@@ -4,7 +4,7 @@ import {sprintf } from 'sprintf-js';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
 
 import { Question } from '../models/question';
-import { Answer } from '../models/answer';
+
 import { Observable } from 'rxjs/Observable';
 import { DbConfig } from '../db.config';
 import { QuestionFactory } from '../models/question-factory';
@@ -51,6 +51,13 @@ export class QuestionService {
   getQuizForUser (lessonId: string, userId): Observable<Quiz> {
     const doc: AngularFirestoreDocument<Quiz> = this.afs.doc(`${DbConfig.QUIZ}/${lessonId}/userId/${userId}`);
     return doc.valueChanges();
+  }
+
+  saveQuizForUser(lessonId: string, userId: string, questions: Question[]): Promise<void> {
+
+    const saveObj = Object.assign({}, {questions});
+
+    return this.afs.doc(`${DbConfig.QUIZ}/${lessonId}/userId/${userId}`).set(saveObj);
   }
 
 }

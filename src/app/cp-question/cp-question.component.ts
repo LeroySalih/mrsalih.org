@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import {sprintf } from 'sprintf-js';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { QuestionService } from '../services/question.service';
@@ -16,13 +16,20 @@ export interface QuestionEvent {
   templateUrl: './cp-question.component.html',
   styleUrls: ['./cp-question.component.css']
 })
-export class CpQuestionComponent implements OnInit {
+export class CpQuestionComponent implements OnInit, OnChanges {
 
   @Input()
   question: Question;
+  typedQuestion: Question;
+
+  @Input()
+  index: number;
 
   @Output()
   questionEvent: EventEmitter<QuestionEvent>;
+
+  selectedAnswer = '';
+  form: FormGroup;
 
   constructor(private fb: FormBuilder,
               private questionService: QuestionService
@@ -30,12 +37,38 @@ export class CpQuestionComponent implements OnInit {
 
     // console.log(sprintf( question[0] as string, question[1], question [2]) );
     this.questionEvent = new EventEmitter<QuestionEvent>();
-    }
+
+  }
 
   ngOnInit() {
+    console.log(`ngOnInit`, this.question);
+    this.typedQuestion = QuestionFactory.createQuestionFromDB(this.question);
+    this.form = this.fb.group({
+      answer: ['', []]
+    });
 
-     this.question = QuestionFactory.createQuestionFromDB(this.question);
-     console.log('ngInit', this.question.displayAnswers());
+
+    this.form.valueChanges.subscribe((data) => {
+      console.log(data);
+    });
+
+    console.log('ngInit', this.typedQuestion.displayAnswers());
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    console.log(`ngOnChanges`, changes);
+    // update the display
+    this.typedQuestion = QuestionFactory.createQuestionFromDB(this.question);
+
+  }
+
+  checkAnswer() {
+    if (this.typedQuestion.checkAnswer(this.form.value['answer'])) {
+      this.questionEvent.emit({type: 'CORRECT_ANSWER', payload: {currentIndex: this.index, answer: this.form.value['answer']}});
+    } else {
+      this.questionEvent.emit({type: 'INCORRECT_ANSWER', payload: {currentIndex: this.index, answer: this.form.value['answer']}});
+    }
+
   }
 
 }

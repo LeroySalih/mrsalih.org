@@ -1,0 +1,31 @@
+.progressBar {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+
+.progressItem {
+    flex: 1;
+    background-color: silver;
+    margin: 2px;
+}
+
+.unanswered {
+    background-color: silver;
+}
+.correct {
+    background-color: green;
+}
+
+.incorrect {
+    background-color: red;
+}
+
+.unknown {
+    background-color: blue;
+}
+
+.current {
+    border: yellow dashed 3px;
+}

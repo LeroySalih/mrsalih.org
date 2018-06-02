@@ -40,15 +40,19 @@
                                 <button type="button" style="width:100%; margin: 3px;" pButton label="Take Quiz" (click)="createQuiz()"></button>
                         </section>
                 </mat-card>
-                <section class="progressBar" *ngIf="questions">
-                        <div class="progressItem success">&nbsp;</div>
-                        <div class="progressItem success">&nbsp;</div>
-                        <div class="progressItem error">&nbsp;</div>
-                        <div class="progressItem error">&nbsp;</div>
-                        <div class="progressItem current">&nbsp;</div>                   
-                </section>
+               <div>
+                        <app-cp-question-status-bar 
+                        [questions]="questions"
+                        [currentIndex]="currentQuestionIndex"
+                        >
+                        </app-cp-question-status-bar>
+               </div>
+
                 <app-cp-question *ngIf="questions" 
-                        [question]="questions[currentQuestion]">
+                        (questionEvent)="onQuestionEvent($event)"
+                        [question]="currentQuestion"
+                        [index]="currentQuestionIndex"
+                        >
                 </app-cp-question>
         </div>
               

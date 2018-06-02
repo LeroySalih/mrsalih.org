@@ -34,10 +34,11 @@ import { QuestionService } from '../services/question.service';
 
 import {Quiz} from '../models/quiz';
 import { Question } from '../models/question';
-import { Answer } from '../models/answer';
+
 import { QuestionFactory } from '../models/question-factory';
 import { QuestionSpec } from '../models/question-spec';
 import { QuestionTypes } from '../enums/question-types';
+import { QuestionStatus } from '../enums/question-status';
 export interface Customer {
   name: string; // required field with minimum 5 characters
   addresses: Address[]; // user can have one or more addresses
@@ -66,7 +67,8 @@ export class PageLessonComponent implements OnInit {
   items: MenuItem[];
   isDragging: boolean;
   questions: Question[];
-  currentQuestion = 0;
+  currentQuestion: Question;
+  currentQuestionIndex = 0;
 
   // sectionPayloadService: any;
 
@@ -146,6 +148,7 @@ export class PageLessonComponent implements OnInit {
 
             if (lessonData.quiz) {
               this.questions =  lessonData.quiz.questions;
+              this.currentQuestion = this.questions[this.currentQuestionIndex];
             }
 
         });
@@ -299,20 +302,30 @@ export class PageLessonComponent implements OnInit {
   }
 
   onQuestionEvent(event) {
+    console.log(`onQuestionEvent`, event);
     switch (event.type) {
-      case 'CORRECT' : return this.correctQuestion(event.payload);
-      case 'INCORRECT' : return this.incorrectQuestion();
-
+      case 'CORRECT_ANSWER' : return this.correctQuestion(event.payload);
+      case 'INCORRECT_ANSWER' : return this.incorrectQuestion(event.payload);
+      default: console.error('[onQuestionEvent] UNKNOWN EVENT TYPE');
     }
   }
 
-  correctQuestion(answer: Answer) {
-    answer.userId = this.userProfile.authenticationId;
-    this.messageService.add({severity: 'SUCCESS', summary: 'Correct!'});
+  correctQuestion(answer: number) {
+     this.questions[this.currentQuestionIndex].status = QuestionStatus.Correct;
+    this.questions[this.currentQuestionIndex].attempts.push({status: QuestionStatus.Correct, answer });
+    // this.messageService.add({severity: 'success', summary: 'Correct!'});
+    this.currentQuestionIndex = (this.currentQuestionIndex + 1) % 5;
+    this.currentQuestion = this.questions[this.currentQuestionIndex];
+    this.questionService.saveQuizForUser(this.lessonId, this.userProfile.authenticationId, this.questions);
   }
 
-  incorrectQuestion() {
-    this.messageService.add({severity: 'DANGER', summary: 'InCorrect!'});
+  incorrectQuestion(answer: number) {
+    this.questions[this.currentQuestionIndex].status = QuestionStatus.Incorrect;
+    this.questions[this.currentQuestionIndex].attempts.push({status: QuestionStatus.Incorrect, answer });
+
+    // this.messageService.add({severity: 'error', summary: 'InCorrect!'});
+    this.questionService.saveQuizForUser(this.lessonId, this.userProfile.authenticationId, this.questions);
+  
   }
 
 

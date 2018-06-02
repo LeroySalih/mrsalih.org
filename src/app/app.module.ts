@@ -53,6 +53,7 @@ import { CpQuestionComponent } from './cp-question/cp-question.component';
 import { KatexModule } from 'ng-katex';
 import { QuestionService } from './services/question.service';
 import { PageQuizComponent } from './page-quiz/page-quiz.component';
+import { CpQuestionStatusBarComponent } from './cp-question-status-bar/cp-question-status-bar.component';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: '/home', pathMatch: 'full'},
@@ -87,6 +88,7 @@ const appRoutes: Routes = [
     SectionEditDialogComponent,
   CpQuestionComponent,
   PageQuizComponent,
+  CpQuestionStatusBarComponent,
   ],
   imports: [
     BrowserModule,

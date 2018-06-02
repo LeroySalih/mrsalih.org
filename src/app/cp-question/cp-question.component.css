@@ -20,28 +20,7 @@
     width: 100%;
 }
 
-.progressBar {
-    display: flex;
-    flex-direction: row;
-}
 
-.progressItem {
-    flex: 1;
-    background-color: silver;
-    margin: 2px;
-}
-
-.success {
-    background-color: red;
-}
-
-.error {
-    background-color: green;
-}
-
-.current {
-    background-color: orange;
-}
 
 .answer {
     margin: 15px;

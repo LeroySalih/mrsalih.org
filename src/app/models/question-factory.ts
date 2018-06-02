@@ -1,9 +1,10 @@
-import {Question} from './question';
+import {Question, Attempt} from './question';
 import { Injectable } from '@angular/core';
 import {sprintf } from 'sprintf-js';
 import {QuestionSpec } from './question-spec';
 import { QuestionService } from '../services/question.service';
 import { QuestionTypes } from '../enums/question-types';
+import { QuestionStatus } from '../enums/question-status';
 
 export class TimeConvertHrsMinsToMins implements Question {
     public order = 0;
@@ -11,8 +12,10 @@ export class TimeConvertHrsMinsToMins implements Question {
     public units = 'mins';
     public questionLabel = 'Convert \\space %1$d:%2$d \\space to \\space minutes';
     public inputParams: number[];
-
+    public answers: any[];
     public type = QuestionTypes.TimeConvertHrsMinsToMins;
+    public status = QuestionStatus.Unaswered;
+    public attempts: Attempt[] = [];
 
     constructor(question: Question = null) {
         if (question) {
@@ -20,6 +23,8 @@ export class TimeConvertHrsMinsToMins implements Question {
         } else {
             this.inputParams = this.inputParamsFn();
         }
+
+        this.answers = this.generateAnswers();
     }
 
     toObject(): any {
@@ -30,6 +35,19 @@ export class TimeConvertHrsMinsToMins implements Question {
             questionLabel: this.questionLabel,
             inputParams: this.inputParams
         };
+    }
+
+    generateAnswers(): any[] {
+
+        const answers = [
+            this.correctAnswer(),
+            this.wrongAnswer(1),
+            this.wrongAnswer(2),
+            this.wrongAnswer(2),
+        ];
+        console.log(`displayanswers:`, answers);
+
+        return answers;
     }
 
     getLabel(): string {
@@ -60,16 +78,11 @@ export class TimeConvertHrsMinsToMins implements Question {
     }
 
     public displayAnswers(): any[] {
+        return this.answers;
+    }
 
-        const answers = [
-            this.correctAnswer(),
-            this.wrongAnswer(1),
-            this.wrongAnswer(2),
-            this.wrongAnswer(2),
-        ];
-        console.log(`displayanswers:`, answers);
-
-        return answers;
+    checkAnswer(answer: string): boolean {
+        return (this.correctAnswer() === parseInt(answer, 10));
     }
 }
 
