@@ -32,11 +32,12 @@ import { MenuItem} from 'primeng/api';
 import { SectionEditDialogComponent } from '../dialogs/section-edit-dialog/section-edit-dialog.component';
 import { QuestionService } from '../services/question.service';
 
-import {Quiz} from '../services/question.service';
+import {Quiz} from '../models/quiz';
 import { Question } from '../models/question';
 import { Answer } from '../models/answer';
 import { QuestionFactory } from '../models/question-factory';
-
+import { QuestionSpec } from '../models/question-spec';
+import { QuestionTypes } from '../enums/question-types';
 export interface Customer {
   name: string; // required field with minimum 5 characters
   addresses: Address[]; // user can have one or more addresses
@@ -117,9 +118,9 @@ export class PageLessonComponent implements OnInit {
           this.loService.getLearningObjectives(this.lessonId),
           this.loProgressService.getLOProgressForUser(this.userProfile.authenticationId, this.lessonId),
           this.sectionPayloadService.getSectionPayloadsForLesson(this.lessonId, this.userProfile.authenticationId),
-          this.questionService.getQuestionsForUser(this.lessonId, this.userProfile.authenticationId),
-           (lesson, sections, progress, los, loProgress, sectionPayloads, questions) =>
-          ({lesson, sections, progress, los, loProgress, sectionPayloads, questions})
+          this.questionService.getQuizForUser(this.lessonId, this.userProfile.authenticationId),
+           (lesson, sections, progress, los, loProgress, sectionPayloads, quiz) =>
+          ({lesson, sections, progress, los, loProgress, sectionPayloads, quiz})
         ).subscribe((lessonData) => {
             console.log(lessonData);
 
@@ -143,7 +144,10 @@ export class PageLessonComponent implements OnInit {
               this.sectionPayloads[sectionPayload.sectionId] = sectionPayload;
             });
 
-            this.questions = lessonData.questions;
+            if (lessonData.quiz) {
+              this.questions =  lessonData.quiz.questions;
+            }
+
         });
 
     });
@@ -402,7 +406,7 @@ export class PageLessonComponent implements OnInit {
       this.questionService.createQuizforUser(
         this.lessonId,
         this.userProfile.authenticationId,
-        QuestionFactory.TIME_CONVERT_HRS_MINS_TO_MINS)
+        QuestionTypes.TimeConvertHrsMinsToMins)
         .then(() => { this.messageService.add({severity: 'success', summary: 'Quiz Created'}); })
         .catch((err) => {
           this.messageService.add({severity: 'danger', summary: err.message});

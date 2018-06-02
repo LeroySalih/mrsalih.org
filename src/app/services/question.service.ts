@@ -8,21 +8,10 @@ import { Answer } from '../models/answer';
 import { Observable } from 'rxjs/Observable';
 import { DbConfig } from '../db.config';
 import { QuestionFactory } from '../models/question-factory';
+import { QuestionSpec } from '../models/question-spec';
 
-
-export interface Quiz {
-  id: string;
-  tag: string;
-  questionSpec: QuestionSpec;
-}
-
-export interface QuestionSpec {
-  units: string;
-  inputParamsSpec: string;
-  questionLabel: string;
-
-  answerLabel: string;
-}
+import { Quiz } from '../models/quiz';
+import { QuestionTypes } from '../enums/question-types';
 
 
 
@@ -35,33 +24,31 @@ export class QuestionService {
    }
 
 
-  logAnswer (answer: Answer) {
-    console.log(`[logAnswer]`);
-  }
-
-  createQuizforUser(lessonId: string, userId: string, questionSpecTag: string): Promise<void> {
+  createQuizforUser(lessonId: string, userId: string, questionType: QuestionTypes): Promise<void> {
 
     console.log(`createQuizforUser lessonId:  ${lessonId}` );
     // const quiz: AngularFirestoreDocument<Quiz> = this.afs.doc(`${DbConfig.QUIZ}/${lessonId}`);
 
     return new Promise ((reject, resolve) => {
 
-        // subscription = quiz.valueChanges().subscribe((data) => {
-
-        // subscription.unsubscribe();
-
         // create 5 questions
-        const questionFactory: QuestionFactory = new QuestionFactory();
-        const questions: Question[] = questionFactory.createQuestions(questionSpecTag, 5);
+        const questions: Question[] = QuestionFactory.createQuestions(QuestionTypes.TimeConvertHrsMinsToMins, 5);
+        const quiz: Quiz = {questions};
 
         // save them to DB
-        return this.afs.doc(`${DbConfig.QUIZ}/${lessonId}/userId/${userId}`).set({questions});
+        const saveQuestions = questions.map((question) => {
+          return Object.assign({}, question);
+        });
+
+        const saveObj = Object.assign({}, {questions: saveQuestions});
+
+        return this.afs.doc(`${DbConfig.QUIZ}/${lessonId}/userId/${userId}`).set(saveObj);
 
       });
 
   }
 
-  getQuestionsForUser (lessonId: string, userId): Observable<Quiz> {
+  getQuizForUser (lessonId: string, userId): Observable<Quiz> {
     const doc: AngularFirestoreDocument<Quiz> = this.afs.doc(`${DbConfig.QUIZ}/${lessonId}/userId/${userId}`);
     return doc.valueChanges();
   }
