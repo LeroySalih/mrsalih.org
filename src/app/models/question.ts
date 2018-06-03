@@ -1,11 +1,6 @@
 import { QuestionTypes } from '../enums/question-types';
 import { QuestionStatus } from '../enums/question-status';
-
-
-export interface Attempt {
-    status: QuestionStatus;
-    answer: number;
-}
+import { Attempt } from './attempt';
 
 export interface Question {
     questionLabel: string;
@@ -21,4 +16,5 @@ export interface Question {
     correctAnswer(): number;
     displayAnswers(): any[];
     checkAnswer(answer: string): boolean;
+    calculateAccuracy(): number;
 }

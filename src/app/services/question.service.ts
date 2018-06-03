@@ -50,12 +50,27 @@ export class QuestionService {
 
   getQuizForUser (lessonId: string, userId): Observable<Quiz> {
     const doc: AngularFirestoreDocument<Quiz> = this.afs.doc(`${DbConfig.QUIZ}/${lessonId}/userId/${userId}`);
-    return doc.valueChanges();
+    return doc.valueChanges().map((quiz) => {
+
+      if (quiz && quiz.questions) {
+        // Ensure that the questions are of the correct type.
+        quiz.questions = quiz.questions.map((obj) => {
+          return QuestionFactory.createQuestionFromDB(obj); }
+        );
+      }
+
+      return quiz;
+    });
   }
 
   saveQuizForUser(lessonId: string, userId: string, questions: Question[]): Promise<void> {
 
-    const saveObj = Object.assign({}, {questions});
+    // save them to DB
+    const saveQuestions = questions.map((question) => {
+      return Object.assign({}, question);
+    });
+
+    const saveObj = Object.assign({}, {questions: saveQuestions});
 
     return this.afs.doc(`${DbConfig.QUIZ}/${lessonId}/userId/${userId}`).set(saveObj);
   }

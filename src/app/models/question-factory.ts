@@ -1,4 +1,5 @@
-import {Question, Attempt} from './question';
+import {Question} from './question';
+import {Attempt} from './attempt';
 import { Injectable } from '@angular/core';
 import {sprintf } from 'sprintf-js';
 import {QuestionSpec } from './question-spec';
@@ -15,13 +16,15 @@ export class TimeConvertHrsMinsToMins implements Question {
     public answers: any[];
     public type = QuestionTypes.TimeConvertHrsMinsToMins;
     public status = QuestionStatus.Unaswered;
-    public attempts: Attempt[] = [];
+    public attempts: Attempt[];
 
     constructor(question: Question = null) {
         if (question) {
             this.inputParams = question.inputParams;
+            this.attempts = question.attempts;
         } else {
             this.inputParams = this.inputParamsFn();
+            this.attempts = [];
         }
 
         this.answers = this.generateAnswers();
@@ -84,6 +87,23 @@ export class TimeConvertHrsMinsToMins implements Question {
     checkAnswer(answer: string): boolean {
         return (this.correctAnswer() === parseInt(answer, 10));
     }
+
+    calculateAccuracy (): number {
+
+        let correct = 1;
+        let incorrect = 1;
+
+        this.attempts.forEach((attempt) => {
+
+          if (attempt.status === QuestionStatus.Correct) {
+            correct ++;
+          } else {
+            incorrect ++;
+          }
+        });
+
+        return Math.ceil((correct / (incorrect + correct) * 100)) ;
+      }
 }
 
 

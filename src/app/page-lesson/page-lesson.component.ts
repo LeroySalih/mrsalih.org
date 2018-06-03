@@ -39,6 +39,8 @@ import { QuestionFactory } from '../models/question-factory';
 import { QuestionSpec } from '../models/question-spec';
 import { QuestionTypes } from '../enums/question-types';
 import { QuestionStatus } from '../enums/question-status';
+import { Attempt } from '../models/attempt';
+
 export interface Customer {
   name: string; // required field with minimum 5 characters
   addresses: Address[]; // user can have one or more addresses
@@ -304,28 +306,51 @@ export class PageLessonComponent implements OnInit {
   onQuestionEvent(event) {
     console.log(`onQuestionEvent`, event);
     switch (event.type) {
-      case 'CORRECT_ANSWER' : return this.correctQuestion(event.payload);
-      case 'INCORRECT_ANSWER' : return this.incorrectQuestion(event.payload);
+      case 'CORRECT_ANSWER' : return this.correctQuestion(event.payload.answer);
+      case 'INCORRECT_ANSWER' : return this.incorrectQuestion(event.payload.answer);
+      case 'NEXT_QUESTION' : return this.nextQuestion();
+      case 'PREVIOUS_QUESTION' : return this.previousQuestion();
       default: console.error('[onQuestionEvent] UNKNOWN EVENT TYPE');
     }
   }
 
+  addAttemptToQuestions(attempt: Attempt, question: Question): void {
+    question.attempts.push(attempt);
+  }
+
   correctQuestion(answer: number) {
      this.questions[this.currentQuestionIndex].status = QuestionStatus.Correct;
-    this.questions[this.currentQuestionIndex].attempts.push({status: QuestionStatus.Correct, answer });
+     const attempt: Attempt = {status: QuestionStatus.Correct, answer };
+     this.addAttemptToQuestions(attempt, this.questions[this.currentQuestionIndex]);
+
     // this.messageService.add({severity: 'success', summary: 'Correct!'});
     this.currentQuestionIndex = (this.currentQuestionIndex + 1) % 5;
     this.currentQuestion = this.questions[this.currentQuestionIndex];
+
+    // save the questions
     this.questionService.saveQuizForUser(this.lessonId, this.userProfile.authenticationId, this.questions);
   }
 
   incorrectQuestion(answer: number) {
-    this.questions[this.currentQuestionIndex].status = QuestionStatus.Incorrect;
-    this.questions[this.currentQuestionIndex].attempts.push({status: QuestionStatus.Incorrect, answer });
 
-    // this.messageService.add({severity: 'error', summary: 'InCorrect!'});
+    // set the status to incorrect
+    this.questions[this.currentQuestionIndex].status = QuestionStatus.Incorrect;
+
+    const attempt: Attempt = {status: QuestionStatus.Incorrect, answer };
+     this.addAttemptToQuestions(attempt, this.questions[this.currentQuestionIndex]);
+
+    // save the questions status
     this.questionService.saveQuizForUser(this.lessonId, this.userProfile.authenticationId, this.questions);
-  
+  }
+
+  nextQuestion() {
+    this.currentQuestionIndex = (this.currentQuestionIndex + 1) % 5;
+    this.currentQuestion = this.questions[this.currentQuestionIndex];
+  }
+
+  previousQuestion() {
+    this.currentQuestionIndex = (this.currentQuestionIndex + 4) % 5;
+    this.currentQuestion = this.questions[this.currentQuestionIndex];
   }
 
 

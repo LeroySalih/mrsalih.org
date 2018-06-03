@@ -3,6 +3,7 @@
         <form [formGroup]="form">
                 
             <section class="typedQuestion">
+                    <div>Question {{index + 1}}</div>
                     <ng-katex [equation]="typedQuestion.getLabel()" style="font-size:x-small"></ng-katex>
             </section>
 
@@ -19,7 +20,9 @@
           </section>
 
             <section class="actions">
-                    <button type="button" style="width:100%; margin: 3px;" pButton label="Submit" (click)="checkAnswer()"></button>
+                    <button type="button" style="width:30%; margin: 3px;" pButton label="<<" (click)="previousQuestion()"></button>
+                    <button type="button" style="width:30%; margin: 3px;" pButton label="Submit" (click)="checkAnswer()"></button>
+                    <button type="button" style="width:30%; margin: 3px;" pButton label=">>" (click)="nextQuestion()"></button>
             </section>
         </form>
     </mat-card-content> 

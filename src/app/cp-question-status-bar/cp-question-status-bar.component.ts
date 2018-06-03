@@ -42,4 +42,11 @@ export class CpQuestionStatusBarComponent implements OnInit, OnChanges {
     }
   }
 
+  getAccuracy(question: Question): string {
+    const accuracy = question.calculateAccuracy();
+    const retVal = (Number.isNaN(accuracy)) ? '--%' : accuracy + '%';
+    return retVal;
+  }
+
+
 }

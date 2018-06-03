@@ -64,11 +64,23 @@ export class CpQuestionComponent implements OnInit, OnChanges {
 
   checkAnswer() {
     if (this.typedQuestion.checkAnswer(this.form.value['answer'])) {
-      this.questionEvent.emit({type: 'CORRECT_ANSWER', payload: {currentIndex: this.index, answer: this.form.value['answer']}});
+      this.questionEvent.emit(
+        {type: 'CORRECT_ANSWER',
+        payload: {currentIndex: this.index, answer: parseFloat(this.form.value['answer'])}});
     } else {
-      this.questionEvent.emit({type: 'INCORRECT_ANSWER', payload: {currentIndex: this.index, answer: this.form.value['answer']}});
+      this.questionEvent.emit(
+        {type: 'INCORRECT_ANSWER',
+        payload: {currentIndex: this.index, answer: parseFloat(this.form.value['answer'])}});
     }
 
+  }
+
+  nextQuestion () {
+    this.questionEvent.emit({type: 'NEXT_QUESTION', payload: null});
+  }
+
+  previousQuestion () {
+    this.questionEvent.emit({type: 'PREVIOUS_QUESTION', payload: null});
   }
 
 }

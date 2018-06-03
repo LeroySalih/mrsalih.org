@@ -1,3 +1,5 @@
 <section class="progressBar" *ngIf="questions">
-    <div *ngFor="let question of questions; let i = index;" class="progressItem" [className]="checkStatus(question)">&nbsp;</div>                  
+    <div *ngFor="let question of questions; let i = index;" class="progressItem" [className]="checkStatus(question)">
+      {{getAccuracy(question)}}
+    </div>                  
 </section>
