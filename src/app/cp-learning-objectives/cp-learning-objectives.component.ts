@@ -40,7 +40,7 @@ export class CpLearningObjectivesComponent implements OnInit {
 
 
   ngOnInit() {
-    console.log(this.loProgress);
+    // console.log(this.loProgress);
     this.route.params.subscribe((params: ParamMap) => {
       this.lessonId = params['id'];
     });
@@ -54,12 +54,12 @@ export class CpLearningObjectivesComponent implements OnInit {
     this.statusChange.emit(event);
   }
   onLOAddClick() {
-    console.log(`[onLOAddClick]`);
+    // console.log(`[onLOAddClick]`);
     this.loEvent.emit({type: 'ADD', lo: {id: null, title: '', order: 0, lessonId: this.lessonId}} as LOEvent);
   }
 
   onLOEvent(event: LOEvent) {
-    console.log(`[onLOEvent] `, event);
+   //  console.log(`[onLOEvent] `, event);
     this.loEvent.emit(event);
   }
 

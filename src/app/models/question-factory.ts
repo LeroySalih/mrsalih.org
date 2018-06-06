@@ -8,7 +8,7 @@ import { QuestionTypes } from '../enums/question-types';
 import { QuestionStatus } from '../enums/question-status';
 
 export class TimeConvertHrsMinsToMins implements Question {
-    public order = 0;
+    public order;
     public answerLabel = '%1d minutes';
     public units = 'mins';
     public questionLabel = 'Convert \\space %1$d:%2$d \\space to \\space minutes';
@@ -22,12 +22,17 @@ export class TimeConvertHrsMinsToMins implements Question {
         if (question) {
             this.inputParams = question.inputParams;
             this.attempts = question.attempts;
+            this.order = question.order;
+            this.status = question.status;
+            this.answers = question.answers;
         } else {
             this.inputParams = this.inputParamsFn();
             this.attempts = [];
+            this.order = 0;
+            this.status = QuestionStatus.Unaswered;
+            this.answers = this.generateAnswers();
         }
 
-        this.answers = this.generateAnswers();
     }
 
     toObject(): any {
@@ -43,12 +48,16 @@ export class TimeConvertHrsMinsToMins implements Question {
     generateAnswers(): any[] {
 
         const answers = [
-            this.correctAnswer(),
+            this.wrongAnswer(1),
             this.wrongAnswer(1),
             this.wrongAnswer(2),
             this.wrongAnswer(2),
         ];
-        console.log(`displayanswers:`, answers);
+        // console.log(`displayanswers:`, answers);
+
+        const pos = Math.floor(Math.random() * 15) % 4;
+
+        answers[pos] = this.correctAnswer();
 
         return answers;
     }
@@ -88,10 +97,15 @@ export class TimeConvertHrsMinsToMins implements Question {
         return (this.correctAnswer() === parseInt(answer, 10));
     }
 
+    addAttempt (attempt: Attempt): void {
+        // insert the attempt at position 0
+        this.attempts = [attempt, ...this.attempts];
+    }
+
     calculateAccuracy (): number {
 
-        let correct = 1;
-        let incorrect = 1;
+        let correct = 0;
+        let incorrect = 0;
 
         this.attempts.forEach((attempt) => {
 
@@ -102,7 +116,11 @@ export class TimeConvertHrsMinsToMins implements Question {
           }
         });
 
-        return Math.ceil((correct / (incorrect + correct) * 100)) ;
+        if (correct + incorrect === 0) {
+            return 0;
+        } else {
+            return Math.ceil((correct / (incorrect + correct) * 100)) ;
+        }
       }
 }
 

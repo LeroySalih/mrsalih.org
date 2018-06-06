@@ -23,7 +23,7 @@ export class CpEmbedLocalVideoComponent implements OnInit {
 
   ngOnInit() {
 
-    console.log(`[ngOnInit]`, this.myVideoId);
+    // console.log(`[ngOnInit]`, this.myVideoId);
 
     if (this.myVideoId) {
       this.safeUrls = this.myVideoId.split(';').map((v) => {

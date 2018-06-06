@@ -20,10 +20,11 @@ export class CpQuestionStatusBarComponent implements OnInit, OnChanges {
 
 
   ngOnInit() {
+   // console.log(`ngOnInit`, this.questions);
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log(`OnChanges`, changes);
+   // console.log(`OnChanges`, changes);
   }
 
   checkStatus (question: Question): string {

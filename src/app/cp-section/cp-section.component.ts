@@ -63,7 +63,7 @@ export class CpSectionComponent implements OnInit {
 
 
   ngOnInit() {
-    console.log(`[ngOnInit]`, this.payload);
+    // console.log(`[ngOnInit]`, this.payload);
   }
 
   onCompleteChange(chk) {

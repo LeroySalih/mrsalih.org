@@ -19,7 +19,7 @@ export class SectionPayloadService {
       lessonId: string,
       userId: string): Observable<SectionPayload[]> {
 
-        console.log(`[getSectionPayloads]`, lessonId, userId);
+   // console.log(`[getSectionPayloads]`, lessonId, userId);
 
     if (lessonId === undefined || userId === undefined) {
       return null;

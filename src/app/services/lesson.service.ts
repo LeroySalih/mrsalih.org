@@ -17,7 +17,7 @@ export class LessonService {
 
   getLessons(moduleId: string): Observable<Lesson[]> {
 
-    console.log(`[getLessons]`, moduleId);
+    // console.log(`[getLessons]`, moduleId);
 
     const collection = this.afs.collection<Lesson>(DbConfig.LESSONS, ref => ref.where('moduleId', '==', moduleId).orderBy('order', 'asc'));
 
@@ -27,7 +27,7 @@ export class LessonService {
 
   getLesson(lessonId: string): Observable<Lesson> {
 
-    console.log(`[getLesson] subscribing to `, lessonId);
+    // console.log(`[getLesson] subscribing to `, lessonId);
 
     const document: AngularFirestoreDocument<Lesson> = this.afs.doc(`${DbConfig.LESSONS}/${lessonId}`);
     return document.valueChanges();
@@ -35,7 +35,7 @@ export class LessonService {
   }
 
   saveLesson (lesson: Lesson): Promise<void> {
-    console.log(`[saveLesson]`, lesson);
+    // console.log(`[saveLesson]`, lesson);
 
     if (lesson.id === undefined || lesson.id === null) {
       console.log(`Lesson Id is undefined, creating new`);
@@ -46,7 +46,7 @@ export class LessonService {
 
   bulkUpdate(lessons: Lesson[]) {
 
-    console.log(`[bulkUpdate]`, lessons);
+    // console.log(`[bulkUpdate]`, lessons);
     const batch = this.afs.firestore.batch();
 
     lessons.forEach((l) => {
@@ -68,7 +68,7 @@ export class LessonService {
       return Promise.reject(new Error('Invalid paramters'));
     }
 
-    console.log(`[demoteLesson]`, [lesson, swapLesson] );
+    // console.log(`[demoteLesson]`, [lesson, swapLesson] );
 
     const batch = this.afs.firestore.batch();
 

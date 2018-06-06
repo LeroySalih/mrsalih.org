@@ -14,6 +14,7 @@ export interface Question {
     getLabel(): string;
     getAnswers(): any[];
     correctAnswer(): number;
+    addAttempt(attempt: Attempt): void;
     displayAnswers(): any[];
     checkAnswer(answer: string): boolean;
     calculateAccuracy(): number;

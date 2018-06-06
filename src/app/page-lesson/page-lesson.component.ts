@@ -315,7 +315,7 @@ export class PageLessonComponent implements OnInit {
   }
 
   addAttemptToQuestions(attempt: Attempt, question: Question): void {
-    question.attempts.push(attempt);
+    question.addAttempt(attempt);
   }
 
   correctQuestion(answer: number) {

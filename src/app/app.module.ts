@@ -54,9 +54,11 @@ import { KatexModule } from 'ng-katex';
 import { QuestionService } from './services/question.service';
 import { PageQuizComponent } from './page-quiz/page-quiz.component';
 import { CpQuestionStatusBarComponent } from './cp-question-status-bar/cp-question-status-bar.component';
+import { PageLandingComponent } from './page-landing/page-landing.component';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: '/home', pathMatch: 'full'},
+  {path: 'landing', component: PageLandingComponent},
   {path: 'home', component: PageHomeComponent},
   {path: 'login', component: PageLoginComponent},
   {path: 'module/:id', component: PageModuleComponent},
@@ -89,6 +91,7 @@ const appRoutes: Routes = [
   CpQuestionComponent,
   PageQuizComponent,
   CpQuestionStatusBarComponent,
+  PageLandingComponent,
   ],
   imports: [
     BrowserModule,

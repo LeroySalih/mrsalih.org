@@ -4,6 +4,7 @@ import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { QuestionService } from '../services/question.service';
 import { QuestionFactory, TimeConvertHrsMinsToMins } from '../models/question-factory';
 import { Question } from '../models/question';
+import { QuestionStatus } from '../enums/question-status';
 
 export interface QuestionEvent {
   type: string;
@@ -41,24 +42,37 @@ export class CpQuestionComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    console.log(`ngOnInit`, this.question);
+    // console.log(`ngOnInit`, this.question);
     this.typedQuestion = QuestionFactory.createQuestionFromDB(this.question);
-    this.form = this.fb.group({
-      answer: ['', []]
-    });
-
 
     this.form.valueChanges.subscribe((data) => {
-      console.log(data);
+    //  console.log(data);
     });
 
-    console.log('ngInit', this.typedQuestion.displayAnswers());
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log(`ngOnChanges`, changes);
+    // console.log(`ngOnChanges`, changes);
     // update the display
     this.typedQuestion = QuestionFactory.createQuestionFromDB(this.question);
+
+    let lastAttemptValue = '';
+
+    if (this.typedQuestion.attempts.length > 0) {
+      lastAttemptValue = this.typedQuestion.attempts[0].answer.toString();
+      console.log(`[ngOnChanges] ${lastAttemptValue}`);
+    }
+
+    this.form = this.fb.group({
+      answer: new FormControl({value: lastAttemptValue, disabled: this.checkAnswerDisable()})
+    });
+  }
+
+  answerClicked(answer: any) {
+    // console.log(`[answerClicked]`, answer);
+    if (this.typedQuestion.status !== QuestionStatus.Correct) {
+      this.checkAnswer();
+    }
 
   }
 
@@ -82,5 +96,12 @@ export class CpQuestionComponent implements OnInit, OnChanges {
   previousQuestion () {
     this.questionEvent.emit({type: 'PREVIOUS_QUESTION', payload: null});
   }
+
+  checkAnswerDisable(): boolean {
+    // console.log(`[checkQuestionDisable] Question ${this.question.order} status is ${this.question.status}`);
+    // return true;
+    return (this.question.status === QuestionStatus.Correct);
+  }
+
 
 }
